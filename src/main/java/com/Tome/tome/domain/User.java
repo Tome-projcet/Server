@@ -25,9 +25,6 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "username")
-    private String username;
-
     @Column(name = "nickname")
     private String nickname;
 
@@ -44,10 +41,9 @@ public class User implements UserDetails {
     private int follwing;
 
     @Builder
-    public User(String email, String password, String username, String nickname, String lifewriter, String auth){
+    public User(String email, String password, String nickname, String lifewriter, String auth){
         this.email = email;
         this.password = password;
-        this.username = username;
         this.nickname = nickname;
         this.lifewriter = lifewriter;
     }
@@ -59,7 +55,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername(){
-        return username;
+        return email;
     }
 
     public String getmail(){

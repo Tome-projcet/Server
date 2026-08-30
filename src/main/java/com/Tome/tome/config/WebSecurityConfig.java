@@ -25,7 +25,7 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        return http.authorizeHttpRequests(auth -> auth.requestMatchers("/login","/signup","/user").permitAll().anyRequest().authenticated()).formLogin(formLogin -> formLogin.loginPage("/login").defaultSuccessUrl("/main")).logout(logout -> logout.logoutSuccessUrl("/login").invalidateHttpSession(true)).csrf(AbstractHttpConfigurer::disable).build();
+        return http.authorizeHttpRequests(auth -> auth.requestMatchers("/login","/signup","/user").permitAll().anyRequest().authenticated()).formLogin(formLogin -> formLogin.loginPage("/login").defaultSuccessUrl("/main").usernameParameter("email")).logout(logout -> logout.logoutSuccessUrl("/login").invalidateHttpSession(true)).csrf(AbstractHttpConfigurer::disable).build();
     }
 
     @Bean
