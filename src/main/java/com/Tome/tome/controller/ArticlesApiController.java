@@ -6,7 +6,6 @@ import com.Tome.tome.dto.AddArticleRequest;
 import com.Tome.tome.dto.UpdateArticleRequest;
 import com.Tome.tome.dto.articleResponses;
 import com.Tome.tome.repository.articlesRepository;
-import com.Tome.tome.service.UserService;
 import com.Tome.tome.service.articleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

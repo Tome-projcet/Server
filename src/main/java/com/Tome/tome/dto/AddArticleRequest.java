@@ -19,6 +19,6 @@ public class AddArticleRequest {
     private String bookreport;
 
     public articles toEntity(){
-        return articles.builder().good(good).time(time).bookreport(bookreport).build();
+        return articles.builder().good(good).bookreport(bookreport).build();
     }
 }

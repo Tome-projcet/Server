@@ -3,13 +3,17 @@ package com.Tome.tome.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 @Getter
 @Table(name = "articles")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 public class articles {
 
     @Id
@@ -20,17 +24,17 @@ public class articles {
     @Column(name = "good")
     private int good;
 
+    @CreatedDate
     @Column(name = "time")
-    private Date time;
+    private LocalDateTime time;
 
     @Column(name = "bookreport")
     private String bookreport;
 
 
     @Builder
-    public articles(String bookreport, Date time, int good){
+    public articles(String bookreport, int good){
         this.bookreport = bookreport;
-        this.time = time;
         this.good = good;
     }
 

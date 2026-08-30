@@ -13,13 +13,11 @@ import java.util.Date;
 public class ArticleViewResponses {
 
     private int good;
-    private Date time;
     private String bookreport;
 
 
     public ArticleViewResponses(articles articles){
         this.good = articles.getGood();
-        this.time = articles.getTime();
         this.bookreport = articles.getBookreport();
     }
 }

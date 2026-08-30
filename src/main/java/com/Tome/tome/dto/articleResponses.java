@@ -10,12 +10,10 @@ import java.util.Date;
 @Getter
 public class articleResponses {
     private int good;
-    private Date time;
     private String bookreport;
 
     public articleResponses(articles articles){
         this.good = articles.getGood();
-        this.time = articles.getTime();
         this.bookreport = articles.getBookreport();
     }
 }
