@@ -1,6 +1,19 @@
 spring:
-  application:
-    name: tome
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    defer-datasource-initialization: true
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
   h2:
     console:
       enabled: true
+  ai:
+    openai:
+      api-key: ...
+jwt:
+  issuer: kmk541124@gmail.com
+  secret_key: tome-server
