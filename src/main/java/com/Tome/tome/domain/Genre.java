@@ -1,4 +1,4 @@
-package com.Tome.tome.domin;
+package com.Tome.tome.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;

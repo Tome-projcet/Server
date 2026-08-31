@@ -1,7 +1,7 @@
 package com.Tome.tome.repository;
 
-import com.Tome.tome.domin.Book;
-import com.Tome.tome.domin.Genre;
+import com.Tome.tome.domain.Book;
+import com.Tome.tome.domain.Genre;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
