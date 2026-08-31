@@ -5,7 +5,9 @@ import com.Tome.tome.domain.articles;
 import com.Tome.tome.dto.AddArticleRequest;
 import com.Tome.tome.dto.UpdateArticleRequest;
 import com.Tome.tome.dto.articleResponses;
+import com.Tome.tome.repository.CommentRepository;
 import com.Tome.tome.repository.articlesRepository;
+import com.Tome.tome.service.CommentService;
 import com.Tome.tome.service.articleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,8 @@ import static org.springframework.http.HttpStatus.OK;
 public class ArticlesApiController {
     private final articleService articleService;
     private final articlesRepository articlesRepository;
+    private final CommentService commentService;
+    private final CommentRepository commentRepository;
 
 
 

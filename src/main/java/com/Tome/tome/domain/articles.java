@@ -24,6 +24,9 @@ public class articles {
     @Column(name = "good")
     private int good;
 
+    @Column(name = "bad")
+    private int bad;
+
     @CreatedDate
     @Column(name = "time")
     private LocalDateTime time;
