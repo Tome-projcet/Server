@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 public class AladinApiController {
 
-    private final com.Tome.tome.service.AladinApiService aladinApiService;
-
+    private final AladinApiService aladinApiService;
     @PostMapping("/books")
     public String fetchBook() {
 
