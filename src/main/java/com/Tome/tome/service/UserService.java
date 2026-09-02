@@ -30,13 +30,12 @@ public class UserService {
             if (result.isPresent()) {
                 throw new IllegalArgumentException("닉네임 존재");
             } else {
-                result = userRepository.findByUsername(dto.getUsername());
-                if (result.isPresent()) {
-                    throw new IllegalArgumentException("아이디 존재");
-                } else {
-                    return userRepository.save(User.builder().email(dto.getEmail()).nickname(dto.getNickname()).password(passwordEncoder.encode(dto.getPassword())).username(dto.getUsername()).build()).getId();
-                }
+                return userRepository.save(User.builder().email(dto.getEmail()).nickname(dto.getNickname()).password(passwordEncoder.encode(dto.getPassword())).build()).getId();
             }
         }
+    }
+
+    public User findById(Long userId){
+        return userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("not found " + userId));
     }
 }
