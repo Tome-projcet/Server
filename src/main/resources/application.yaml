@@ -1,19 +1,25 @@
 spring:
-  jpa:
-    show-sql: true
-    properties:
+  spring:
+    datasource:
+      url: jdbc:postgresql://localhost:5432/tome
+      username: dgsw05
+      password:
+    jpa:
       hibernate:
-        format_sql: true
-    defer-datasource-initialization: true
-  datasource:
-    url: jdbc:h2:mem:testdb
-    username: sa
+        ddl-auto: update
   h2:
     console:
       enabled: true
-  ai:
-    openai:
-      api-key: ...
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ...
+            client-secret: ...
+            scope:
+              - email
+              - profile
 jwt:
   issuer: kmk541124@gmail.com
   secret_key: tome-server
