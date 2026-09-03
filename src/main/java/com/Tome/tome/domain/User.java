@@ -1,6 +1,7 @@
 package com.Tome.tome.domain;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -99,5 +100,10 @@ public class User implements UserDetails {
 
     public void upFollowing(){
         this.follwing += 1;
+    }
+
+    @Transactional
+    public void setProfileUrl(String url){
+        this.profileUrl = url;
     }
 }

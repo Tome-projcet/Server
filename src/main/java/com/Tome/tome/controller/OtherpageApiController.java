@@ -36,4 +36,17 @@ public class OtherpageApiController {
         return ResponseEntity.ok().build();
     }
 
+
+    @GetMapping("/api/otherpage/{id}/profile")
+    public ResponseEntity<String> viewProfile(@PathVariable Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found " + id));
+        String url  = user.getProfileUrl();
+
+        if(url.isEmpty()){
+            return ResponseEntity.ok().body(null); //나중에 기본 프로필이 보이도록 설정할꺼임
+        }
+        else {
+            return ResponseEntity.ok().body(url);
+        }
+    }
 }
