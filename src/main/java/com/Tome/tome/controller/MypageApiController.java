@@ -16,16 +16,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class MypageApiController {
 
     private final UserRepository userRepository;
+    private final UserService userService;
 
     @GetMapping("/api/mypage")
     public ResponseEntity<User> viewmypage(@AuthenticationPrincipal User user){
         return ResponseEntity.status(200).body(user);
     }
 
-    @GetMapping("/api/otherpage/{id}")
-    public ResponseEntity<User> viewotherpage(@PathVariable Long id){
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found " + id));
 
-        return ResponseEntity.status(200).body(user);
-    }
 }

@@ -14,7 +14,7 @@ public class UserDetailService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username){
-        return userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException((username)));
+    public UserDetails loadUserByUsername(String email){
+        return userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException((email)));
     }
 }

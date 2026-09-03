@@ -16,40 +16,41 @@ import java.util.List;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false)
+    @Column(updatable = false)
     private Long id;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password")
+    @Column
     private String password;
 
-    @Column(name = "username")
-    private String username;
-
-    @Column(name = "nickname")
+    @Column
     private String nickname;
 
-    @Column(name = "lifewriter")
+    @Column
     private String lifewriter;
 
-    @Column(name = "bookcount")
+    @Column
     private String bookcount;
 
-    @Column(name="follow")
+    @Column
     private int follow;
 
-    @Column(name = "follwing")
+    @Column
     private int follwing;
 
+
+    @Column(name = "profile_url")
+    private String profileUrl;
+
     @Builder
-    public User(String email, String password, String username, String nickname, String lifewriter, String auth){
+    public User(String email, String password, String nickname, String lifewriter, String auth){
         this.email = email;
         this.password = password;
-        this.username = username;
         this.nickname = nickname;
         this.lifewriter = lifewriter;
+
     }
 
     @Override
@@ -59,7 +60,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername(){
-        return username;
+        return email;
     }
 
     public String getmail(){
@@ -84,5 +85,19 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled(){
         return true;
+    }
+
+    public User update(String nickname){
+        this.nickname = nickname;
+
+        return this;
+    }
+
+    public void upFollow(){
+        this.follow += 1;
+    }
+
+    public void upFollowing(){
+        this.follwing += 1;
     }
 }

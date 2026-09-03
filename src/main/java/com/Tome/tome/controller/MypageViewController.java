@@ -22,15 +22,6 @@ public class MypageViewController {
         return "my_page";
     }
 
-    @GetMapping("/otherpage/{id}")
-    public String viewotherpage(@PathVariable Long id, Model model){
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found " + id));
-
-        model.addAttribute("other_page", user);
-
-
-        return "other_page";
-    }
 }
 
 
