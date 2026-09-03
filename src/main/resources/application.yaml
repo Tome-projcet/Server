@@ -1,6 +1,24 @@
 spring:
-  application:
-    name: tome
+  datasource:
+    url: jdbc:postgresql://localhost:5432/tome
+    username: dgsw05
+    password: toem
+  jpa:
+    hibernate:
+      ddl-auto: update
   h2:
     console:
       enabled: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ...
+            client-secret: ...
+            scope:
+              - email
+              - profile
+jwt:
+  issuer: kmk541124@gmail.com
+  secret_key: tome-server

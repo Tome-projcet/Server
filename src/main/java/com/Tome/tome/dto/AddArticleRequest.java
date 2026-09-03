@@ -15,7 +15,6 @@ import java.util.Date;
 @NoArgsConstructor
 public class AddArticleRequest {
     private int good;
-    private Date time;
     private String bookreport;
 
     public articles toEntity(){

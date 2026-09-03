@@ -49,6 +49,13 @@ public class ArticlesApiController {
         return ResponseEntity.status(200).body(articles1);
     }
 
+    @GetMapping("/api/articles/{id}/good/up")
+    public void upgood(@PathVariable Long id){
+        articles articles = articlesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found " + id));
+
+        articles.upgood();
+    }
+
     @DeleteMapping("/api/articles/{id}")
     public void deleteArticles(@PathVariable Long id){
         articlesRepository.deleteById(id);

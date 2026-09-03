@@ -45,4 +45,8 @@ public class articles {
         this.bookreport = bookreport;
         this.good = good;
     }
+
+    public void upgood(){
+        this.good += 1;
+    }
 }
