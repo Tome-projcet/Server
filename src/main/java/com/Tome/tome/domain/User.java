@@ -17,30 +17,32 @@ import java.util.List;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(updatable = false)
+    @Column(name = "id", updatable = false)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column
+    @Column(name = "password")
     private String password;
 
-    @Column
+    @Column(name = "nickname")
     private String nickname;
 
-    @Column
+    @Column(name = "lifewriter")
     private String lifewriter;
 
-    @Column
+    @Column(name = "bookcount")
     private String bookcount;
 
-    @Column
+    @Column(name="follow")
     private int follow;
 
-    @Column
+    @Column(name = "follwing")
     private int follwing;
 
+    @Column(name = "first")
+    private boolean first = true;
 
     @Column(name = "profile_url")
     private String profileUrl;
@@ -51,7 +53,6 @@ public class User implements UserDetails {
         this.password = password;
         this.nickname = nickname;
         this.lifewriter = lifewriter;
-
     }
 
     @Override
@@ -88,8 +89,22 @@ public class User implements UserDetails {
         return true;
     }
 
+    public boolean getfirst(){
+        return this.first;
+    }
+
+
+    public void updateFirst(){
+        this.first = false;
+    }
     public User update(String nickname){
         this.nickname = nickname;
+
+        return this;
+    }
+
+    public User updateWriter(String writer){
+        this.lifewriter = writer;
 
         return this;
     }
@@ -103,7 +118,9 @@ public class User implements UserDetails {
     }
 
     @Transactional
-    public void setProfileUrl(String url){
+    public User UpdateProfileUrl(String url){
         this.profileUrl = url;
+
+        return this;
     }
 }
