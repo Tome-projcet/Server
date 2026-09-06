@@ -21,10 +21,19 @@ public class UserViewController {
         return "main";
     }
 
-    @GetMapping("articles")
+    @GetMapping("/articles")
     public String articles(){
         return "articles";
     }
 
 
+    @GetMapping("/onbording/nickname")
+    public String onbording(){
+        return "onbording";
+    }
+
+    @GetMapping("/onbording/writer")
+    public String onbordingWriter(){
+        return "onbordingWriter";
+    }
 }

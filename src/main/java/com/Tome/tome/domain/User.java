@@ -40,6 +40,9 @@ public class User implements UserDetails {
     @Column(name = "follwing")
     private int follwing;
 
+    @Column(name = "first")
+    private boolean first = true;
+
     @Builder
     public User(String email, String password, String nickname, String lifewriter, String auth){
         this.email = email;
@@ -82,8 +85,22 @@ public class User implements UserDetails {
         return true;
     }
 
+    public boolean getfirst(){
+        return this.first;
+    }
+
+
+    public void updateFirst(){
+        this.first = false;
+    }
     public User update(String nickname){
         this.nickname = nickname;
+
+        return this;
+    }
+
+    public User updateWriter(String writer){
+        this.lifewriter = writer;
 
         return this;
     }
