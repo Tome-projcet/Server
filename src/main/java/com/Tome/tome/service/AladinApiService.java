@@ -53,7 +53,7 @@ public class AladinApiService {
             }
 
             for (JsonNode item : items) {
-                String isbn13 = getText(item, "isb13");
+                String isbn13 = getText(item, "isbn13");
                 String title = getText(item, "title");
                 String writer = getText(item, "author");
                 String categoryName = getText(item, "categoryName");
