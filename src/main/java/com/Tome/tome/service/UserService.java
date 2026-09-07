@@ -1,9 +1,12 @@
 package com.Tome.tome.service;
 
 
+import com.Tome.tome.domain.Genre;
 import com.Tome.tome.domain.User;
 import com.Tome.tome.dto.AddUserRequest;
+import com.Tome.tome.repository.GenreRepository;
 import com.Tome.tome.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,7 +18,7 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-
+    private final GenreRepository genreRepository;
 
 
     public Long save(AddUserRequest dto) throws IllegalArgumentException {
@@ -53,5 +56,16 @@ public class UserService {
 
         targetuser.upFollowing();
         user.upFollow();
+    }
+
+    @Transactional
+    public void checkGenre(User user, String genreName){
+        Optional<Genre> existing = genreRepository.findByUserAndGenreName(user, genreName);
+
+        if (existing.isPresent()) {
+            existing.get().increaseCount();
+        } else {
+            genreRepository.save(Genre.builder().name(genreName).user(user).build());
+        }
     }
 }
