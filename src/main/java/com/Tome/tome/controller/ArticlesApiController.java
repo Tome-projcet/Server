@@ -5,6 +5,7 @@ import com.Tome.tome.domain.articles;
 import com.Tome.tome.dto.AddArticleRequest;
 import com.Tome.tome.dto.UpdateArticleRequest;
 import com.Tome.tome.dto.articleResponses;
+import com.Tome.tome.repository.ArticleGenreRepository;
 import com.Tome.tome.repository.CommentRepository;
 import com.Tome.tome.repository.articlesRepository;
 import com.Tome.tome.service.CommentService;
@@ -25,12 +26,13 @@ public class ArticlesApiController {
     private final articlesRepository articlesRepository;
     private final CommentService commentService;
     private final CommentRepository commentRepository;
+    private final ArticleGenreRepository articleGenreRepository;
 
 
 
     @PostMapping("/api/articles")
     public ResponseEntity<articles> addArticles(@RequestBody AddArticleRequest request){
-        articles saveData = articlesRepository.save(request.toEntity());
+        articles saveData = articleService.save(request);
 
         return ResponseEntity.status(201).body(saveData);
     }
@@ -53,6 +55,7 @@ public class ArticlesApiController {
     public void upgood(@PathVariable Long id){
         articles articles = articlesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found " + id));
 
+        // 기억못할까봐 적는거, 좋아요 누르면 장르 올라가게
         articles.upgood();
     }
 
