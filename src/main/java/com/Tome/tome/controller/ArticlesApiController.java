@@ -55,7 +55,6 @@ public class ArticlesApiController {
     public void upgood(@PathVariable Long id){
         articles articles = articlesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found " + id));
 
-        // 기억못할까봐 적는거, 좋아요 누르면 장르 올라가게
         articles.upgood();
     }
 

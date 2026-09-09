@@ -8,11 +8,9 @@ import com.Tome.tome.domain.articles;
 import com.Tome.tome.dto.AddArticleRequest;
 import com.Tome.tome.dto.UpdateArticleRequest;
 import com.Tome.tome.repository.ArticleGenreRepository;
-import com.Tome.tome.repository.GenreRepository;
+import com.Tome.tome.repository.UserGenreRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.sql.Update;
-import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Service;
 import com.Tome.tome.repository.articlesRepository;
 
@@ -23,7 +21,7 @@ import java.util.Optional;
 @Service
 public class articleService {
     private final articlesRepository articlesRepository;
-    private final GenreRepository genreRepository;
+    private final UserGenreRepository userGenreRepository;
     private final ArticleGenreRepository articleGenreRepository;
 
 
@@ -49,7 +47,7 @@ public class articleService {
         List<ArticleGenre> genreList = articleGenreRepository.findByArticles_Id(articles.getId());
 
         for(ArticleGenre item : genreList){
-            Optional<UserGenre> userGenre = genreRepository.findByName(item.getBookname());
+            Optional<UserGenre> userGenre = userGenreRepository.findByName(item.getBookname());
             userGenre.get().increaseCount();
         }
         articles.upgood();
