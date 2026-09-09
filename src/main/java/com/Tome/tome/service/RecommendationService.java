@@ -1,14 +1,15 @@
 package com.Tome.tome.service;
 
 import com.Tome.tome.domain.Book;
-import com.Tome.tome.domain.Genre;
+import com.Tome.tome.domain.UserGenre;
 import com.Tome.tome.dto.BookResponseDto;
 import com.Tome.tome.repository.BookRepository;
-import com.Tome.tome.repository.UserPreferenceGenreRepository;
+import com.Tome.tome.repository.GenreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -16,22 +17,22 @@ import java.util.List;
 public class RecommendationService {
 
     private final BookRepository bookRepository;
-    private final UserPreferenceGenreRepository userPreferenceGenreRepository;
+    private final GenreRepository genreRepository;
 
     public List<BookResponseDto> getRecommendations(Long userId) {
 
+        List<UserGenre> userGenres = genreRepository.findByUser_id(userId);
+
+        userGenres.sort(
+                Comparator.comparingInt(UserGenre::getCount).reversed()
+        );
+
         List<BookResponseDto> recommendations = new ArrayList<>();
 
-        List<Genre> preferredGenres =
-                userPreferenceGenreRepository.findPreferredGenresByUserId(userId);
+        for (UserGenre userGenre : userGenres) {
 
-        if (preferredGenres.isEmpty()) {
-            return recommendations;
-        }
-
-        for (Genre genre : preferredGenres) {
-
-            List<Book> books = bookRepository.findByGenre(genre);
+            List<Book> books =
+                    bookRepository.findByGenre_Name(userGenre.getName());
 
             for (Book book : books) {
                 recommendations.add(new BookResponseDto(book));
