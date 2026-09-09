@@ -4,6 +4,7 @@ package com.Tome.tome.controller;
 import com.Tome.tome.domain.User;
 import com.Tome.tome.dto.GenreRequest;
 import com.Tome.tome.repository.UserRepository;
+import com.Tome.tome.service.UserMostService;
 import com.Tome.tome.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
@@ -19,6 +20,7 @@ public class MypageApiController {
 
     private final UserRepository userRepository;
     private final UserService userService;
+    private final UserMostService userMostService;
 
     @GetMapping("/api/mypage")
     public ResponseEntity<User> viewmypage(@AuthenticationPrincipal User user){
@@ -74,5 +76,12 @@ public class MypageApiController {
         userService.checkGenre(user, request.getName());
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/api/mypage/mostgenre")
+    public ResponseEntity<Void> mostgenre(@AuthenticationPrincipal User user){
+        userMostService.mostGenreset(user);
+
+        return ResponseEntity.status(200).build();
     }
 }

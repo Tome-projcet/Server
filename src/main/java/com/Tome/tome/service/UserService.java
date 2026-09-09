@@ -3,13 +3,14 @@ package com.Tome.tome.service;
 
 import com.Tome.tome.domain.Genre;
 import com.Tome.tome.domain.User;
+import com.Tome.tome.domain.UserGenre;
 import com.Tome.tome.dto.AddUserRequest;
 import com.Tome.tome.repository.GenreRepository;
+import com.Tome.tome.repository.UserGenreRepository;
 import com.Tome.tome.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -18,7 +19,7 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final GenreRepository genreRepository;
+    private final UserGenreRepository userGenreRepository;
 
 
     public Long save(AddUserRequest dto) throws IllegalArgumentException {
@@ -60,12 +61,12 @@ public class UserService {
 
     @Transactional
     public void checkGenre(User user, String genreName){
-        Optional<Genre> existing = genreRepository.findByUserAndGenreName(user, genreName);
+        Optional<UserGenre> existing = userGenreRepository.findByUserAndName(user, genreName);
 
         if (existing.isPresent()) {
             existing.get().increaseCount();
         } else {
-            genreRepository.save(Genre.builder().name(genreName).user(user).build());
+            userGenreRepository.save(UserGenre.builder().name(genreName).user(user).build());
         }
     }
 }

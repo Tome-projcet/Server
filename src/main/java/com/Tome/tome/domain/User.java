@@ -33,7 +33,7 @@ public class User implements UserDetails {
     private String lifewriter;
 
     @Column(name = "bookcount")
-    private String bookcount;
+    private int bookcount;
 
     @Column(name="follow")
     private int follow;
@@ -53,6 +53,7 @@ public class User implements UserDetails {
         this.password = password;
         this.nickname = nickname;
         this.lifewriter = lifewriter;
+        this.bookcount = 0;
     }
 
     @Override
