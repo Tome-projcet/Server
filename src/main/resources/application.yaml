@@ -12,8 +12,23 @@ spring:
       ddl-auto: update
     show-sql: true
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ...
+            client-secret: ...
+            scope:
+              - email
+              - profile
+
 server:
   port: 8080
 
 aladin:
   ttb-key: ${ALADIN_API_KEY}
+
+jwt:
+  issuer: kmk541124@gmail.com
+  secret_key: tome-server
