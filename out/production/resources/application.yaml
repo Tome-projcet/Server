@@ -1,18 +1,34 @@
 spring:
   application:
-    name: tome
+    name: Tome
 
   datasource:
-    url: jdbc:h2:file:./data/tome
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: ${DATABASE_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
 
-  h2:
-    console:
-      enabled: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ...
+            client-secret: ...
+            scope:
+              - email
+              - profile
+
+server:
+  port: 8080
+
+aladin:
+  ttb-key: ${ALADIN_API_KEY}
+
+jwt:
+  issuer: kmk541124@gmail.com
+  secret_key: tome-server
