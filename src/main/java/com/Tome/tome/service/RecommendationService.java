@@ -4,7 +4,7 @@ import com.Tome.tome.domain.Book;
 import com.Tome.tome.domain.UserGenre;
 import com.Tome.tome.dto.BookResponseDto;
 import com.Tome.tome.repository.BookRepository;
-import com.Tome.tome.repository.GenreRepository;
+import com.Tome.tome.repository.UserGenreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +17,11 @@ import java.util.List;
 public class RecommendationService {
 
     private final BookRepository bookRepository;
-    private final GenreRepository genreRepository;
+    private final UserGenreRepository userGenreRepository;
 
     public List<BookResponseDto> getRecommendations(Long userId) {
 
-        List<UserGenre> userGenres = genreRepository.findByUser_id(userId);
+        List<UserGenre> userGenres = userGenreRepository.findByUser_id(userId);
 
         userGenres.sort(
                 Comparator.comparingInt(UserGenre::getCount).reversed()

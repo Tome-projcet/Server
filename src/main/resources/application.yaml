@@ -3,9 +3,9 @@ spring:
     name: Tome
 
   datasource:
-    url: ${DATABASE_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/tome}
+    username: ${DB_USERNAME:dgsw05}
+    password: ${DB_PASSWORD:}
 
   jpa:
     hibernate:

@@ -2,8 +2,11 @@ package com.Tome.tome.service;
 
 
 import com.Tome.tome.domain.User;
+import com.Tome.tome.domain.UserGenre;
 import com.Tome.tome.dto.AddUserRequest;
+import com.Tome.tome.repository.UserGenreRepository;
 import com.Tome.tome.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +18,7 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final UserGenreRepository userGenreRepository;
 
 
 
@@ -47,4 +51,22 @@ public class UserService {
         return user;
     }
 
+    @Transactional
+    public void upfollwing(User targetuser, Long id){
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found " + id));
+
+        targetuser.upFollowing();
+        user.upFollow();
+    }
+
+    @Transactional
+    public void checkGenre(User user, String genreName){
+        Optional<UserGenre> existing = userGenreRepository.findByUserAndName(user, genreName);
+
+        if (existing.isPresent()) {
+            existing.get().increaseCount();
+        } else {
+            userGenreRepository.save(UserGenre.builder().name(genreName).user(user).build());
+        }
+    }
 }

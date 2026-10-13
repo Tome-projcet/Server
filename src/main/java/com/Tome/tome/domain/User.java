@@ -43,6 +43,9 @@ public class User implements UserDetails {
     @Column(name = "first")
     private boolean first = true;
 
+    @Column(name = "profile_url")
+    private String profileUrl;
+
     @Builder
     public User(String email, String password, String nickname, String lifewriter, String auth){
         this.email = email;
@@ -101,6 +104,20 @@ public class User implements UserDetails {
 
     public User updateWriter(String writer){
         this.lifewriter = writer;
+
+        return this;
+    }
+
+    public void upFollow(){
+        this.follow += 1;
+    }
+
+    public void upFollowing(){
+        this.follwing += 1;
+    }
+
+    public User UpdateProfileUrl(String url){
+        this.profileUrl = url;
 
         return this;
     }
