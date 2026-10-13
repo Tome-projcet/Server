@@ -3,6 +3,7 @@ package com.Tome.tome.service;
 
 
 import com.Tome.tome.domain.ArticleGenre;
+import com.Tome.tome.domain.User;
 import com.Tome.tome.domain.UserGenre;
 import com.Tome.tome.domain.articles;
 import com.Tome.tome.dto.AddArticleRequest;

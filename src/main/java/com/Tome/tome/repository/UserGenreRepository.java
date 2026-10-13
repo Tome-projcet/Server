@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserGenreRepository extends JpaRepository<UserGenre, Long> {
-    Optional<UserGenre> findByUserAndGenreName(User user, String genreName);
+    Optional<UserGenre> findByUserAndName(User user, String name);
     List<UserGenre> findByUser_id(Long id);
     Optional<UserGenre> findByName(String name);
-
+    List<UserGenre> findTop3ByUserOrderByCountDesc(User user);
 }
