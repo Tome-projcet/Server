@@ -28,8 +28,8 @@ public class AladinApiService {
     public void fetchAndSaveBooks() {
 
         String url = UriComponentsBuilder
-                .fromUriString("http://www.aladin.co.kr/ttb/api/ItemList.aspx")
-                .queryParam("ttbkey", ttbKey)
+                .fromUriString("https://www.aladin.co.kr/ttb/api/ItemList.aspx")
+                .queryParam("ttbkey", ttbKey.trim())
                 .queryParam("QueryType", "Bestseller")
                 .queryParam("MaxResults", 10)
                 .queryParam("start", 1)

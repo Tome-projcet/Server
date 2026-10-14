@@ -11,8 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static org.springframework.boot.security.autoconfigure.web.servlet.PathRequest.toH2Console;
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -20,12 +18,12 @@ public class WebSecurityConfig {
 
     @Bean
     public WebSecurityCustomizer configure(){
-        return (web) -> web.ignoring().requestMatchers(toH2Console()).requestMatchers("/static/**");
+        return (web) -> web.ignoring().requestMatchers("/static/**");
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        return http.authorizeHttpRequests(auth -> auth.requestMatchers("/login","/signup","/user").permitAll().anyRequest().authenticated())
+        return http.authorizeHttpRequests(auth -> auth.requestMatchers("/login","/signup","/user","/error").permitAll().anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin.loginPage("/login").defaultSuccessUrl("/main").usernameParameter("email"))
                 .logout(logout -> logout.logoutSuccessUrl("/login").invalidateHttpSession(true))
                 .csrf(AbstractHttpConfigurer::disable).build();
