@@ -53,10 +53,26 @@ public class UserService {
 
     @Transactional
     public void upfollwing(User targetuser, Long id){
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found " + id));
+        User loginUser = findById(targetuser.getId());
+        User user = findById(id);
 
-        targetuser.upFollowing();
+        loginUser.upFollowing();
         user.upFollow();
+    }
+
+    @Transactional
+    public User updateNickname(Long userId, String nickname){
+        return findById(userId).update(nickname);
+    }
+
+    @Transactional
+    public User updateWriter(Long userId, String writer){
+        return findById(userId).updateWriter(writer);
+    }
+
+    @Transactional
+    public User updateProfileUrl(Long userId, String url){
+        return findById(userId).UpdateProfileUrl(url);
     }
 
     @Transactional

@@ -47,7 +47,7 @@ public class UserApiController {
 
     @GetMapping("/api/main")
     public String main(@AuthenticationPrincipal User user){
-        Boolean first = user.getfirst();
+        Boolean first = userService.findById(user.getId()).getfirst();
         if(first){
             return "redirect:/onbording/nickname";
         }
@@ -57,18 +57,16 @@ public class UserApiController {
     }
 
     @PutMapping("/api/onbording/nickname")
-    @Transactional
     public ResponseEntity<User> setting(@AuthenticationPrincipal User user, String nickname){
-        User updateuser = user.update(nickname);
+        User updateuser = userService.updateNickname(user.getId(), nickname);
 
         return ResponseEntity.ok().body(updateuser);
     }
 
 
     @PutMapping("/api/onbording/writer")
-    @Transactional
     public ResponseEntity<User> settingwriter(@AuthenticationPrincipal User user, String writer){
-        User updateuser = user.updateWriter(writer);
+        User updateuser = userService.updateWriter(user.getId(), writer);
 
         return ResponseEntity.ok().body(updateuser);
     }

@@ -24,22 +24,21 @@ public class MypageApiController {
 
     @GetMapping("/api/mypage")
     public ResponseEntity<User> viewmypage(@AuthenticationPrincipal User user){
-        return ResponseEntity.status(200).body(user);
+        return ResponseEntity.status(200).body(userService.findById(user.getId()));
     }
 
-    @Transactional
     @PutMapping("/api/mypage/profile")
     public ResponseEntity<User> settingProfile(@AuthenticationPrincipal User user, String url){
-        User updateuser = user.UpdateProfileUrl(url);
+        User updateuser = userService.updateProfileUrl(user.getId(), url);
 
         return ResponseEntity.status(201).body(updateuser);
     }
 
     @GetMapping("/api/mypage/profile/view")
     public ResponseEntity<String> viewProfile(@AuthenticationPrincipal User user){
-        String url  = user.getProfileUrl();
+        String url  = userService.findById(user.getId()).getProfileUrl();
 
-        if(url.isEmpty()){
+        if(url == null || url.isEmpty()){
             return ResponseEntity.ok().body(null); //나중에 기본 프로필이 보이도록 설정할꺼임
         }
         else {
@@ -47,26 +46,23 @@ public class MypageApiController {
         }
     }
 
-    @Transactional
     @PutMapping("/api/mypage/update/nickname")
     public ResponseEntity<User> updateNickname(@AuthenticationPrincipal User user, String nickname){
-        User updateuser = user.update(nickname);
+        User updateuser = userService.updateNickname(user.getId(), nickname);
 
         return ResponseEntity.ok().body(updateuser);
     }
 
-    @Transactional
     @PutMapping("/api/mypage/update/profile")
     public ResponseEntity<User> updateProfile(@AuthenticationPrincipal User user, String url){
-        User updateuser = user.UpdateProfileUrl(url);
+        User updateuser = userService.updateProfileUrl(user.getId(), url);
 
         return ResponseEntity.ok().body(updateuser);
     }
 
-    @Transactional
     @PutMapping("/api/mypage/update/writer")
     public ResponseEntity<User> updateWriter(@AuthenticationPrincipal User user, String writer){
-        User updateuser = user.updateWriter(writer);
+        User updateuser = userService.updateWriter(user.getId(), writer);
 
         return ResponseEntity.ok().body(updateuser);
     }

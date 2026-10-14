@@ -30,6 +30,10 @@ public class UserMostGenre {
     @Column
     private String third;
 
+    public UserMostGenre(User user){
+        this.user = user;
+    }
+
 
     public void setFirst(String first){
         this.first = first;

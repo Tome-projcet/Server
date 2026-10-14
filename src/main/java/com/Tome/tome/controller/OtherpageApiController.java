@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequiredArgsConstructor
 public class OtherpageApiController {
 
-    private UserRepository userRepository;
-    protected UserService userService;
+    private final UserRepository userRepository;
+    private final UserService userService;
 
     @GetMapping("/api/otherpage/{id}")
     public ResponseEntity<User> findAllOtherpage(@PathVariable Long id){
@@ -43,7 +43,7 @@ public class OtherpageApiController {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found " + id));
         String url  = user.getProfileUrl();
 
-        if(url.isEmpty()){
+        if(url == null || url.isEmpty()){
             return ResponseEntity.ok().body(null); //나중에 기본 프로필이 보이도록 설정할꺼임
         }
         else {
