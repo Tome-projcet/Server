@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.Tome.tome.service.BookCatalogServiceTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-10-14T07:35:21.749Z" hostname="loser.local" time="0.27">
+  <properties/>
+  <testcase name="libraryFailureLeavesPreviousCatalogUntouched()" classname="com.Tome.tome.service.BookCatalogServiceTest" time="0.262"/>
+  <testcase name="failedEnrichmentStillSavesLibraryBooksAndStopsFurtherRequests()" classname="com.Tome.tome.service.BookCatalogServiceTest" time="0.007"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

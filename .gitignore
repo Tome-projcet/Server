@@ -24,3 +24,5 @@ hs_err_pid*
 replay_pid*
 
 .env
+# Keep the Gradle Wrapper bootstrap JAR in version control.
+!gradle/wrapper/gradle-wrapper.jar

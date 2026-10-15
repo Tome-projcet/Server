@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class UserGenre {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,14 +23,15 @@ public class UserGenre {
     @Column(name = "count")
     private int count;
 
+
     @Builder
     public UserGenre(String name, User user) {
         this.name = name;
-        this.user = user;
         this.count = 0;
+        this.user = user;
     }
 
-    public void increaseCount() {
+    public void increaseCount(){
         this.count += 1;
     }
 }

@@ -14,4 +14,11 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     List<Book> findByGenre(Genre genre);
 
     List<Book> findByGenre_Name(String name);
+    @org.springframework.data.jpa.repository.Query("select b from Book b where b.genre.name in :names order by coalesce(b.loanCount, 0) desc, b.id asc")
+    List<Book> findByGenre_NameIn(@org.springframework.data.repository.query.Param("names") java.util.Collection<String> names,
+                                 org.springframework.data.domain.Pageable pageable);
+    @org.springframework.data.jpa.repository.Query("select b from Book b order by coalesce(b.loanCount, 0) desc, b.id asc")
+    List<Book> findAllBy(org.springframework.data.domain.Pageable pageable);
+    List<Book> findByTitleContainingIgnoreCaseOrWriterContainingIgnoreCase(String title, String writer,
+                                                                          org.springframework.data.domain.Pageable pageable);
 }

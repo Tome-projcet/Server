@@ -26,8 +26,6 @@ spring:
 server:
   port: 8080
 
-aladin:
-  ttb-key: ${ALADIN_API_KEY}
 
 jwt:
   issuer: kmk541124@gmail.com
