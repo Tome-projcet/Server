@@ -1,0 +1,77 @@
+package com.Tome.tome.domain.user.controller;
+
+import com.Tome.tome.domain.user.dto.AddUserRequest;
+import com.Tome.tome.domain.user.entity.User;
+import com.Tome.tome.domain.user.repository.UserRepository;
+import com.Tome.tome.domain.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+
+@RequiredArgsConstructor
+@Controller
+public class UserApiController {
+
+    private final UserService userService;
+    private final UserRepository userRepository;
+
+    @PostMapping("/user")
+    public String signup(AddUserRequest request, RedirectAttributes redirectAttributes){
+        try {
+            userService.save(request);
+        } catch (IllegalArgumentException e) {
+            if(e.getMessage().equals("조건이 틀렸습니다")) {
+                return "redirect:/signup?error";
+            }
+            else{
+                redirectAttributes.addFlashAttribute("error1", e.getMessage());
+                return "redirect:/signup?error1";
+            }
+        }
+        return "redirect:/login";
+    }
+
+    @GetMapping("/api/main")
+    public String main(@AuthenticationPrincipal User user){
+        Boolean first = userService.findById(user.getId()).getfirst();
+        if(first){
+            return "redirect:/onbording/nickname";
+        }
+        else{
+            return "redirect:/main";
+        }
+    }
+
+    @PutMapping("/api/onbording/nickname")
+    public ResponseEntity<User> setting(@AuthenticationPrincipal User user, String nickname){
+        User updateuser = userService.updateNickname(user.getId(), nickname);
+
+        return ResponseEntity.ok().body(updateuser);
+    }
+
+
+    @PutMapping("/api/onbording/writer")
+    public ResponseEntity<User> settingwriter(@AuthenticationPrincipal User user, String writer){
+        User updateuser = userService.updateWriter(user.getId(), writer);
+
+        return ResponseEntity.ok().body(updateuser);
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response){
+        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+        return "redirect:/login";
+    }
+}
