@@ -2,23 +2,19 @@ package com.Tome.tome.domain.article.controller;
 
 import com.Tome.tome.domain.article.dto.ArticleViewResponses;
 import com.Tome.tome.domain.article.entity.Articles;
-import com.Tome.tome.domain.article.repository.articlesRepository;
+import com.Tome.tome.domain.article.port.in.ArticleUseCase;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+@RequiredArgsConstructor
 @Controller
-
 public class ArticlesViewController {
 
-    private final articlesRepository articlesRepository;
-
-    public ArticlesViewController(articlesRepository articlesRepository) {
-        this.articlesRepository = articlesRepository;
-    }
+    private final ArticleUseCase articleUseCase;
 
     @GetMapping("/articlesAll")
     public String viewAll(){
@@ -27,9 +23,9 @@ public class ArticlesViewController {
 
     @GetMapping("/article/{id}")
     public String viewarticle(@PathVariable Long id, Model model){
-        Articles articles = articlesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found" + id));
+        Articles articles = articleUseCase.findById(id);
 
-        model.addAttribute("article", articles);
+        model.addAttribute("article", new ArticleViewResponses(articles));
         return "article";
     }
 
@@ -39,7 +35,7 @@ public class ArticlesViewController {
             model.addAttribute("article", new ArticleViewResponses());
         }
         else{
-            Articles articles = articlesRepository.findById(id).orElseThrow();
+            Articles articles = articleUseCase.findById(id);
             model.addAttribute("article", new ArticleViewResponses(articles));
         }
         return "newarticle";

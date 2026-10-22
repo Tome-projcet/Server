@@ -5,6 +5,7 @@ import com.Tome.tome.domain.article.repository.articlesRepository;
 import com.Tome.tome.domain.comment.dto.AddCommentRequest;
 import com.Tome.tome.domain.comment.dto.UpdateCommentRequest;
 import com.Tome.tome.domain.comment.entity.Comment;
+import com.Tome.tome.domain.comment.port.in.CommentUseCase;
 import com.Tome.tome.domain.comment.repository.CommentRepository;
 import com.Tome.tome.domain.user.entity.User;
 import jakarta.transaction.Transactional;
@@ -15,10 +16,11 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class CommentService {
+public class CommentService implements CommentUseCase {
     private final CommentRepository commentRepository;
     private final articlesRepository articlesRepository;
 
+    @Override
     public Comment save(Long articleId, AddCommentRequest request, User user){
         Articles articles = articlesRepository.findById(articleId).orElseThrow(() -> new IllegalArgumentException("not found " + articleId));
         Comment comment = Comment.builder()
@@ -26,10 +28,12 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
+    @Override
     public List<Comment> findByArticle(Long articleId){
         return commentRepository.findByArticles_Id(articleId);
     }
 
+    @Override
     @Transactional
     public Comment update(Long id, UpdateCommentRequest request){
        Comment comment = commentRepository.findById(id).orElseThrow(()->new IllegalArgumentException("not found " + id));
@@ -38,7 +42,15 @@ public class CommentService {
        return comment;
     }
 
-    public void delete(Long id){
-        commentRepository.deleteById(id);
+    @Override
+    @Transactional
+    public boolean delete(Long id, User user){
+        Comment comment = commentRepository.findById(id).orElseThrow();
+        if(comment.getUser() == null || !comment.getUser().getId().equals(user.getId())){
+            return false;
+        }
+
+        commentRepository.delete(comment);
+        return true;
     }
 }

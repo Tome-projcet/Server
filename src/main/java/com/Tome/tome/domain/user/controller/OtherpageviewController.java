@@ -1,7 +1,7 @@
 package com.Tome.tome.domain.user.controller;
 
 import com.Tome.tome.domain.user.entity.User;
-import com.Tome.tome.domain.user.repository.UserRepository;
+import com.Tome.tome.domain.user.port.in.UserUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class OtherpageviewController {
 
-    private final UserRepository userRepository;
+    private final UserUseCase userUseCase;
 
     @GetMapping("/otherpage/{id}")
     public String viewOtherPage(@PathVariable Long id, Model model){
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found " + id));
+        User user = userUseCase.findById(id);
 
         model.addAttribute("otherpage", user);
 

@@ -2,6 +2,7 @@ package com.Tome.tome.domain.book.service;
 
 import com.Tome.tome.domain.book.dto.BookResponseDto;
 import com.Tome.tome.domain.book.entity.Book;
+import com.Tome.tome.domain.book.port.in.RecommendationUseCase;
 import com.Tome.tome.domain.book.repository.BookRepository;
 import com.Tome.tome.domain.user.entity.UserGenre;
 import com.Tome.tome.domain.user.repository.UserGenreRepository;
@@ -15,13 +16,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class RecommendationService {
+public class RecommendationService implements RecommendationUseCase {
 
     private static final int RECOMMEND_LIMIT = 10;
 
     private final BookRepository bookRepository;
     private final UserGenreRepository userGenreRepository;
 
+    @Override
     public List<BookResponseDto> getRecommendations(Long userId) {
 
         List<UserGenre> userGenres = new ArrayList<>(userGenreRepository.findByUser_id(userId));

@@ -3,6 +3,7 @@ package com.Tome.tome.domain.user.service;
 import com.Tome.tome.domain.user.entity.User;
 import com.Tome.tome.domain.user.entity.UserGenre;
 import com.Tome.tome.domain.user.entity.UserMostGenre;
+import com.Tome.tome.domain.user.port.in.UserMostUseCase;
 import com.Tome.tome.domain.user.repository.UserGenreRepository;
 import com.Tome.tome.domain.user.repository.UserMostGenreRepository;
 import com.Tome.tome.domain.user.repository.UserRepository;
@@ -15,13 +16,14 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserMostService {
+public class UserMostService implements UserMostUseCase {
     private final UserGenreRepository userGenreRepository;
     private final UserMostGenreRepository userMostGenreRepository;
     private final UserRepository userRepository;
 
 
 
+    @Override
     @Transactional
     public void mostGenreset(User user){
         List<UserGenre> top3 = userGenreRepository.findTop3ByUserOrderByCountDesc(user);

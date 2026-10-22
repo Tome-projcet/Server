@@ -1,7 +1,7 @@
 package com.Tome.tome.domain.book.controller;
 
 import com.Tome.tome.domain.book.dto.BookResponseDto;
-import com.Tome.tome.domain.book.service.RecommendationService;
+import com.Tome.tome.domain.book.port.in.RecommendationUseCase;
 import com.Tome.tome.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,11 +16,11 @@ import java.util.List;
 @RequestMapping("/api/recommend")
 public class RecommendationController {
 
-    private final RecommendationService recommendationService;
+    private final RecommendationUseCase recommendationUseCase;
 
     @GetMapping("/books")
     public List<BookResponseDto> getRecommendations(@AuthenticationPrincipal User user) {
 
-        return recommendationService.getRecommendations(user.getId());
+        return recommendationUseCase.getRecommendations(user.getId());
     }
 }

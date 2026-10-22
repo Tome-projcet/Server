@@ -4,6 +4,7 @@ import com.Tome.tome.domain.user.dto.AddUserRequest;
 import com.Tome.tome.domain.user.entity.User;
 import com.Tome.tome.domain.user.entity.UserFollow;
 import com.Tome.tome.domain.user.entity.UserGenre;
+import com.Tome.tome.domain.user.port.in.UserUseCase;
 import com.Tome.tome.domain.user.repository.UserFollowRepository;
 import com.Tome.tome.domain.user.repository.UserGenreRepository;
 import com.Tome.tome.domain.user.repository.UserRepository;
@@ -16,14 +17,14 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class UserService {
+public class UserService implements UserUseCase {
     private final UserRepository userRepository;
     private final UserGenreRepository userGenreRepository;
     private final UserFollowRepository userFollowRepository;
     private final PasswordEncoder passwordEncoder;
 
-
-    public Long save(AddUserRequest dto) throws IllegalArgumentException {
+    @Override
+    public Long save(AddUserRequest dto) {
         if (dto.getPassword() == null || dto.getPassword().length() < 8) {
             throw new IllegalArgumentException("조건이 틀렸습니다");
         }
@@ -41,19 +42,25 @@ public class UserService {
         }
     }
 
+    @Override
     public User findById(Long userId){
         return userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("not found " + userId));
     }
 
+    @Override
     public User findByEmail(String email){
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("not found " + email));
-        return user;
+        return userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("not found " + email));
     }
 
+    @Override
     @Transactional
-    public void upfollwing(User argetuser, Long id){
-        User targetuser = userRepository.findById(argetuser.getId()).orElseThrow();
-        User user = userRepository.findById(id).orElseThrow();
+    public boolean upfollwing(User loginUser, Long id){
+        User targetuser = findById(loginUser.getId());
+        User user = findById(id);
+        if(targetuser.getId().equals(user.getId())){
+            return false;
+        }
+
         if(userFollowRepository.findByUserAndMainUser(targetuser, user).isPresent()){
             userFollowRepository.deleteByMainUserAndUser(user, targetuser);
             userRepository.addFollowing(targetuser.getId(), -1);
@@ -66,23 +73,39 @@ public class UserService {
             userRepository.addFollowing(targetuser.getId(), 1);
             userRepository.addFollow(user.getId(), 1);
         }
+        return true;
     }
 
+    @Override
+    @Transactional
+    public boolean checkFirstLogin(Long userId){
+        User user = findById(userId);
+        if(user.getfirst()){
+            user.updateFirst();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     @Transactional
     public User updateNickname(Long userId, String nickname){
         return findById(userId).update(nickname);
     }
 
+    @Override
     @Transactional
     public User updateWriter(Long userId, String writer){
         return findById(userId).updateWriter(writer);
     }
 
+    @Override
     @Transactional
     public User updateProfileUrl(Long userId, String url){
         return findById(userId).UpdateProfileUrl(url);
     }
 
+    @Override
     @Transactional
     public void checkGenre(User user, String genreName){
         Optional<UserGenre> existing = userGenreRepository.findByUserAndName(user, genreName);
