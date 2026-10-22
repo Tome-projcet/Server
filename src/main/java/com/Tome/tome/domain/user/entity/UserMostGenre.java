@@ -16,7 +16,7 @@ public class UserMostGenre {
     @Column
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private User user;
 

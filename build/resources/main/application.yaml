@@ -1,6 +1,8 @@
 spring:
   application:
     name: Tome
+  config:
+    import: optional:file:.env[.properties]
 
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/tome}
@@ -9,8 +11,8 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: ${JPA_DDL_AUTO:update}
+    show-sql: ${JPA_SHOW_SQL:false}
 
   security:
     oauth2:
@@ -26,9 +28,8 @@ spring:
 server:
   port: 8080
 
-aladin:
-  ttb-key: ${ALADIN_API_KEY}
 
 jwt:
   issuer: kmk541124@gmail.com
-  secret_key: tome-server
+  # 운영에서는 반드시 .env 또는 환경변수 JWT_SECRET_KEY(32바이트 이상)로 바꿔서 쓸 것
+  secret_key: ${JWT_SECRET_KEY:tome-local-dev-only-secret-key-change-me-2026}

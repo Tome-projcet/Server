@@ -3,7 +3,8 @@ package com.Tome.tome.domain.article.service;
 import com.Tome.tome.domain.article.dto.AddArticleRequest;
 import com.Tome.tome.domain.article.dto.UpdateArticleRequest;
 import com.Tome.tome.domain.article.entity.ArticleGenre;
-import com.Tome.tome.domain.article.entity.articles;
+import com.Tome.tome.domain.article.entity.Articles;
+import com.Tome.tome.domain.article.entity.Articles;
 import com.Tome.tome.domain.article.repository.ArticleGenreRepository;
 import com.Tome.tome.domain.article.repository.articlesRepository;
 import com.Tome.tome.domain.user.entity.User;
@@ -23,15 +24,17 @@ public class articleService {
     private final ArticleGenreRepository articleGenreRepository;
 
 
-    public articles save(AddArticleRequest request){
-        return articlesRepository.save(request.toEntity());
+    public Articles save(AddArticleRequest request, User user){
+        Articles article = Articles.builder()
+                .bookreport(request.getBookreport()).user(user).build();
+        return articlesRepository.save(article);
     }
 
-    public List<articles> findAll(){
+    public List<Articles> findAll(){
         return articlesRepository.findAll();
     }
 
-    public articles findById(Long id){
+    public Articles findById(Long id){
         return articlesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("찾을 수 없음"));
     }
 
@@ -40,22 +43,19 @@ public class articleService {
     }
 
 
-    @Transactional
-    public void upgood(User user, articles articles){
-        List<ArticleGenre> genreList = articleGenreRepository.findByArticles_Id(articles.getId());
 
-        for(ArticleGenre item : genreList){
-            Optional<UserGenre> userGenre = userGenreRepository.findByName(item.getBookname());
-            userGenre.get().increaseCount();
+    @Transactional
+    public void upgood(Long id){
+        if(articlesRepository.increaseGood(id) == 0){
+            throw new IllegalArgumentException("not found " + id);
         }
-        articles.upgood();
     }
 
     @Transactional
-    public articles Update(Long id, UpdateArticleRequest request){
-        articles articles = articlesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found" + id));
+    public Articles Update(Long id, UpdateArticleRequest request){
+        Articles articles = articlesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found" + id));
 
-        articles.update(request.getBookreport(), request.getGood());
+        articles.update(request.getBookreport());
         return articles;
     }
 }

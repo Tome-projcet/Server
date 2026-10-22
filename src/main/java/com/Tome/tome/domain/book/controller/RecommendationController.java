@@ -2,10 +2,11 @@ package com.Tome.tome.domain.book.controller;
 
 import com.Tome.tome.domain.book.dto.BookResponseDto;
 import com.Tome.tome.domain.book.service.RecommendationService;
+import com.Tome.tome.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -18,9 +19,8 @@ public class RecommendationController {
     private final RecommendationService recommendationService;
 
     @GetMapping("/books")
-    public List<BookResponseDto> getRecommendations(
-            @RequestParam Long userId) {
+    public List<BookResponseDto> getRecommendations(@AuthenticationPrincipal User user) {
 
-        return recommendationService.getRecommendations(userId);
+        return recommendationService.getRecommendations(user.getId());
     }
 }

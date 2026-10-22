@@ -8,7 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateCommentRequest {
-    private int good;
-    private int bad;
     private String comment;
 }

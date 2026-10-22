@@ -116,6 +116,14 @@ public class User implements UserDetails {
         this.follwing += 1;
     }
 
+    public void downFollowing(){
+        this.follwing -=1;
+    }
+
+    public void downFollow(){
+        this.follow -=1;
+    }
+
     public User UpdateProfileUrl(String url){
         this.profileUrl = url;
 

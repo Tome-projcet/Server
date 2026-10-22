@@ -10,7 +10,6 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateArticleRequest {
-    private int good;
     private Date time;
     private String bookreport;
 }

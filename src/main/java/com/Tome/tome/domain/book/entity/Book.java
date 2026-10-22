@@ -28,7 +28,7 @@ public class Book {
 
     private String publisher;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "genre_id")
     private Genre genre;
 

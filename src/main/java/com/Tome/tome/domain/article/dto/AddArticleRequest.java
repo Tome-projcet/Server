@@ -1,6 +1,6 @@
 package com.Tome.tome.domain.article.dto;
 
-import com.Tome.tome.domain.article.entity.articles;
+import com.Tome.tome.domain.article.entity.Articles;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,10 +13,5 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddArticleRequest {
-    private int good;
     private String bookreport;
-
-    public articles toEntity(){
-        return articles.builder().good(good).bookreport(bookreport).build();
-    }
 }

@@ -1,5 +1,6 @@
 package com.Tome.tome.domain.user.controller;
 
+import com.Tome.tome.domain.user.dto.PageUserResponse;
 import com.Tome.tome.domain.user.entity.User;
 import com.Tome.tome.domain.user.repository.UserRepository;
 import com.Tome.tome.domain.user.service.UserService;
@@ -21,19 +22,23 @@ public class OtherpageApiController {
     private final UserService userService;
 
     @GetMapping("/api/otherpage/{id}")
-    public ResponseEntity<User> findAllOtherpage(@PathVariable Long id){
+    public ResponseEntity<PageUserResponse> findAllOtherpage(@PathVariable Long id){
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found " + id));
-
-        return ResponseEntity.status(200).body(user);
+        PageUserResponse pageUserResponse = PageUserResponse.from(user);
+        return ResponseEntity.status(200).body(pageUserResponse);
     }
 
 
     @Transactional
     @PutMapping("/api/otherpage/{id}/follow")
     public ResponseEntity<Void> upfollow(@PathVariable Long id, @AuthenticationPrincipal User user){
-        userService.upfollwing(user, id);
+        User user1 = userRepository.findById(id).orElseThrow();
+        if(!user1.getId().equals(user.getId())){
+            userService.upfollwing(user, id);
 
-        return ResponseEntity.ok().build();
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(404).build();
     }
 
 

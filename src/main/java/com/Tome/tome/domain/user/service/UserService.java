@@ -2,12 +2,13 @@ package com.Tome.tome.domain.user.service;
 
 import com.Tome.tome.domain.user.dto.AddUserRequest;
 import com.Tome.tome.domain.user.entity.User;
+import com.Tome.tome.domain.user.entity.UserFollow;
 import com.Tome.tome.domain.user.entity.UserGenre;
+import com.Tome.tome.domain.user.repository.UserFollowRepository;
 import com.Tome.tome.domain.user.repository.UserGenreRepository;
 import com.Tome.tome.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,13 +19,12 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final UserGenreRepository userGenreRepository;
-
+    private final UserFollowRepository userFollowRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
     public Long save(AddUserRequest dto) throws IllegalArgumentException {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
-        if (dto.getPassword().length() < 8) {
+        if (dto.getPassword() == null || dto.getPassword().length() < 8) {
             throw new IllegalArgumentException("조건이 틀렸습니다");
         }
 
@@ -36,7 +36,7 @@ public class UserService {
             if (result.isPresent()) {
                 throw new IllegalArgumentException("닉네임 존재");
             } else {
-                return userRepository.save(User.builder().email(dto.getEmail()).nickname(dto.getNickname()).password(encoder.encode(dto.getPassword())).build()).getId();
+                return userRepository.save(User.builder().email(dto.getEmail()).nickname(dto.getNickname()).password(passwordEncoder.encode(dto.getPassword())).build()).getId();
             }
         }
     }
@@ -51,12 +51,21 @@ public class UserService {
     }
 
     @Transactional
-    public void upfollwing(User targetuser, Long id){
-        User loginUser = findById(targetuser.getId());
-        User user = findById(id);
+    public void upfollwing(User argetuser, Long id){
+        User targetuser = userRepository.findById(argetuser.getId()).orElseThrow();
+        User user = userRepository.findById(id).orElseThrow();
+        if(userFollowRepository.findByUserAndMainUser(targetuser, user).isPresent()){
+            userFollowRepository.deleteByMainUserAndUser(user, targetuser);
+            userRepository.addFollowing(targetuser.getId(), -1);
+            userRepository.addFollow(user.getId(), -1);
+        } else {
+            UserFollow userFollow = UserFollow.builder()
+                    .mainUser(user).user(targetuser).build();
+            userFollowRepository.save(userFollow);
 
-        loginUser.upFollowing();
-        user.upFollow();
+            userRepository.addFollowing(targetuser.getId(), 1);
+            userRepository.addFollow(user.getId(), 1);
+        }
     }
 
     @Transactional

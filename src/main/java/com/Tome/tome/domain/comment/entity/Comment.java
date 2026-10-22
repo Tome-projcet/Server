@@ -1,6 +1,7 @@
 package com.Tome.tome.domain.comment.entity;
 
-import com.Tome.tome.domain.article.entity.articles;
+import com.Tome.tome.domain.article.entity.Articles;
+import com.Tome.tome.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -33,19 +34,22 @@ public class Comment {
     private int bad;
 
     @CreatedDate
-    @Column(name = "Create At")
+    @Column(name = "CreateAt")
     private LocalDateTime CreateAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "articles_id")
-    private articles articles;
+    private Articles articles;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Builder
-    public Comment(String comment, int good, int bad, articles articles){
+    public Comment(String comment, Articles articles,User user){
         this.comment = comment;
-        this.good = good;
-        this.bad = bad;
         this.articles = articles;
+        this.user = user;
     }
 
     public String findComment(){
@@ -60,9 +64,7 @@ public class Comment {
         return bad;
     }
 
-    public void update(String comment, int good, int bad){
+    public void update(String comment){
         this.comment = comment;
-        this.good = good;
-        this.bad = bad;
     }
 }

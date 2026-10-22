@@ -1,6 +1,7 @@
 package com.Tome.tome.domain.user.controller;
 
 import com.Tome.tome.domain.genre.dto.GenreRequest;
+import com.Tome.tome.domain.user.dto.PageUserResponse;
 import com.Tome.tome.domain.user.entity.User;
 import com.Tome.tome.domain.user.repository.UserRepository;
 import com.Tome.tome.domain.user.service.UserMostService;
@@ -22,15 +23,16 @@ public class MypageApiController {
     private final UserMostService userMostService;
 
     @GetMapping("/api/mypage")
-    public ResponseEntity<User> viewmypage(@AuthenticationPrincipal User user){
-        return ResponseEntity.status(200).body(userService.findById(user.getId()));
+    public ResponseEntity<PageUserResponse> viewmypage(@AuthenticationPrincipal User user){
+        PageUserResponse pageUserResponse = PageUserResponse.from(user);
+        return ResponseEntity.status(200).body(pageUserResponse);
     }
 
     @PutMapping("/api/mypage/profile")
-    public ResponseEntity<User> settingProfile(@AuthenticationPrincipal User user, String url){
+    public ResponseEntity<PageUserResponse> settingProfile(@AuthenticationPrincipal User user, String url){
         User updateuser = userService.updateProfileUrl(user.getId(), url);
 
-        return ResponseEntity.status(201).body(updateuser);
+        return ResponseEntity.status(201).body(PageUserResponse.from(updateuser));
     }
 
     @GetMapping("/api/mypage/profile/view")
@@ -46,24 +48,24 @@ public class MypageApiController {
     }
 
     @PutMapping("/api/mypage/update/nickname")
-    public ResponseEntity<User> updateNickname(@AuthenticationPrincipal User user, String nickname){
+    public ResponseEntity<PageUserResponse> updateNickname(@AuthenticationPrincipal User user, String nickname){
         User updateuser = userService.updateNickname(user.getId(), nickname);
 
-        return ResponseEntity.ok().body(updateuser);
+        return ResponseEntity.ok().body(PageUserResponse.from(updateuser));
     }
 
     @PutMapping("/api/mypage/update/profile")
-    public ResponseEntity<User> updateProfile(@AuthenticationPrincipal User user, String url){
+    public ResponseEntity<PageUserResponse> updateProfile(@AuthenticationPrincipal User user, String url){
         User updateuser = userService.updateProfileUrl(user.getId(), url);
 
-        return ResponseEntity.ok().body(updateuser);
+        return ResponseEntity.ok().body(PageUserResponse.from(updateuser));
     }
 
     @PutMapping("/api/mypage/update/writer")
-    public ResponseEntity<User> updateWriter(@AuthenticationPrincipal User user, String writer){
+    public ResponseEntity<PageUserResponse> updateWriter(@AuthenticationPrincipal User user, String writer){
         User updateuser = userService.updateWriter(user.getId(), writer);
 
-        return ResponseEntity.ok().body(updateuser);
+        return ResponseEntity.ok().body(PageUserResponse.from(updateuser));
     }
 
     @PostMapping("/api/onbording/genre")
@@ -73,7 +75,7 @@ public class MypageApiController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/api/mypage/mostgenre")
+    @PutMapping("/api/mypage/mostgenre")
     public ResponseEntity<Void> mostgenre(@AuthenticationPrincipal User user){
         userMostService.mostGenreset(user);
 

@@ -22,12 +22,12 @@ public class ArticleGenre {
     @Column
     private String bookname;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "articles_id")
-    private articles articles;
+    private Articles articles;
 
     @Builder
-    public ArticleGenre(String bookname, articles articles){
+    public ArticleGenre(String bookname, Articles articles){
         this.articles = articles;
         this.bookname = bookname;
     }

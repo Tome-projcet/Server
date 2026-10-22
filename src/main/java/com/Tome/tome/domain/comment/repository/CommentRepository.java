@@ -1,5 +1,6 @@
 package com.Tome.tome.domain.comment.repository;
 
+import com.Tome.tome.domain.article.entity.Articles;
 import com.Tome.tome.domain.comment.entity.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,4 +13,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     Optional<Comment> findByBad(int bad);
 
     List<Comment> findByArticles_Id(Long articleId);
+
+    void deleteByArticles(Articles articles);
+
 }

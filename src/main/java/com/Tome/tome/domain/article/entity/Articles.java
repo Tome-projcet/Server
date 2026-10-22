@@ -1,5 +1,6 @@
 package com.Tome.tome.domain.article.entity;
 
+import com.Tome.tome.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -13,7 +14,7 @@ import java.util.Date;
 @Table(name = "articles")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class articles {
+public class Articles {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,16 +34,20 @@ public class articles {
     @Column(name = "bookreport")
     private String bookreport;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
 
     @Builder
-    public articles(String bookreport, int good){
+    public Articles(String bookreport, User user){
         this.bookreport = bookreport;
-        this.good = good;
+        this.good = 0;
+        this.user = user;
     }
 
-    public void update(String bookreport, int good){
+    public void update(String bookreport){
         this.bookreport = bookreport;
-        this.good = good;
     }
 
     public void upgood(){

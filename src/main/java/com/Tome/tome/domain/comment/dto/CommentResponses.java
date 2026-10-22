@@ -5,11 +5,13 @@ import lombok.Getter;
 
 @Getter
 public class CommentResponses {
+    private Long id;
     private String comment;
     private int good;
     private int bad;
 
     public CommentResponses(Comment comment){
+        this.id = comment.getId();
         this.comment = comment.getComment();
         this.good = comment.getGood();
         this.bad = comment.getBad();

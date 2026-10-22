@@ -6,6 +6,7 @@ import com.Tome.tome.domain.book.repository.BookRepository;
 import com.Tome.tome.domain.user.entity.UserGenre;
 import com.Tome.tome.domain.user.repository.UserGenreRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,12 +17,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RecommendationService {
 
+    private static final int RECOMMEND_LIMIT = 10;
+
     private final BookRepository bookRepository;
     private final UserGenreRepository userGenreRepository;
 
     public List<BookResponseDto> getRecommendations(Long userId) {
 
-        List<UserGenre> userGenres = userGenreRepository.findByUser_id(userId);
+        List<UserGenre> userGenres = new ArrayList<>(userGenreRepository.findByUser_id(userId));
 
         userGenres.sort(
                 Comparator.comparingInt(UserGenre::getCount).reversed()
@@ -30,17 +33,17 @@ public class RecommendationService {
         List<BookResponseDto> recommendations = new ArrayList<>();
 
         for (UserGenre userGenre : userGenres) {
+            int remaining = RECOMMEND_LIMIT - recommendations.size();
+            if (remaining <= 0) {
+                break;
+            }
 
             List<Book> books =
-                    bookRepository.findByGenre_Name(userGenre.getName());
+                    bookRepository.findByGenre_Name(userGenre.getName(), PageRequest.of(0, remaining));
 
             for (Book book : books) {
                 recommendations.add(new BookResponseDto(book));
             }
-        }
-
-        if (recommendations.size() > 10) {
-            return recommendations.subList(0, 10);
         }
 
         return recommendations;

@@ -1,7 +1,7 @@
 package com.Tome.tome.domain.article.controller;
 
 import com.Tome.tome.domain.article.dto.ArticleViewResponses;
-import com.Tome.tome.domain.article.entity.articles;
+import com.Tome.tome.domain.article.entity.Articles;
 import com.Tome.tome.domain.article.repository.articlesRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +27,7 @@ public class ArticlesViewController {
 
     @GetMapping("/article/{id}")
     public String viewarticle(@PathVariable Long id, Model model){
-        articles articles = articlesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found" + id));
+        Articles articles = articlesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found" + id));
 
         model.addAttribute("article", articles);
         return "article";
@@ -39,7 +39,7 @@ public class ArticlesViewController {
             model.addAttribute("article", new ArticleViewResponses());
         }
         else{
-            articles articles = articlesRepository.findById(id).orElseThrow();
+            Articles articles = articlesRepository.findById(id).orElseThrow();
             model.addAttribute("article", new ArticleViewResponses(articles));
         }
         return "newarticle";

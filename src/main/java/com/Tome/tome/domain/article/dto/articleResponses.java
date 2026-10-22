@@ -1,6 +1,6 @@
 package com.Tome.tome.domain.article.dto;
 
-import com.Tome.tome.domain.article.entity.articles;
+import com.Tome.tome.domain.article.entity.Articles;
 import jakarta.persistence.Column;
 import lombok.Getter;
 
@@ -12,7 +12,7 @@ public class articleResponses {
     private int good;
     private String bookreport;
 
-    public articleResponses(articles articles){
+    public articleResponses(Articles articles){
         this.good = articles.getGood();
         this.bookreport = truncate(articles.getBookreport(), 50);
     }
