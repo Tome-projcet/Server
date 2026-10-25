@@ -2,9 +2,11 @@ package com.Tome.tome.domain.article.service;
 
 import com.Tome.tome.domain.article.dto.AddArticleRequest;
 import com.Tome.tome.domain.article.dto.UpdateArticleRequest;
+import com.Tome.tome.domain.article.entity.ArticleGood;
 import com.Tome.tome.domain.article.entity.Articles;
 import com.Tome.tome.domain.article.port.in.ArticleUseCase;
 import com.Tome.tome.domain.article.repository.ArticleGenreRepository;
+import com.Tome.tome.domain.article.repository.ArticleGoodRepository;
 import com.Tome.tome.domain.article.repository.articlesRepository;
 import com.Tome.tome.domain.comment.repository.CommentRepository;
 import com.Tome.tome.domain.user.entity.User;
@@ -12,6 +14,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +28,7 @@ public class articleService implements ArticleUseCase {
     private final articlesRepository articlesRepository;
     private final ArticleGenreRepository articleGenreRepository;
     private final CommentRepository commentRepository;
+    private final ArticleGoodRepository articleGoodRepository;
 
     @Override
     public Articles save(AddArticleRequest request, User user){
@@ -46,9 +50,19 @@ public class articleService implements ArticleUseCase {
 
     @Override
     @Transactional
-    public void upgood(Long id){
-        if(articlesRepository.increaseGood(id) == 0){
+    public void upgood(Long id, User user){
+        if(articlesRepository.findById(id).isEmpty()){
             throw new IllegalArgumentException("not found " + id);
+        }
+        Articles articles = articlesRepository.findById(id).orElseThrow();
+        if(articleGoodRepository.findByUserAndArticles(user, articles).isPresent()){
+            articles.downGood();
+            articleGoodRepository.deleteByArticlesAndUser(articles, user);
+        } else {
+            ArticleGood articleGood = ArticleGood.builder()
+                            .articles(articles).user(user).build();
+            articleGoodRepository.save(articleGood);
+            articles.upGood();
         }
     }
 

@@ -1,5 +1,6 @@
 package com.Tome.tome.global.config;
 
+import com.Tome.tome.domain.auth.handler.LoginSuccessHandler;
 import com.Tome.tome.global.config.jwt.TokenAuthenticationFilter;
 import com.Tome.tome.global.config.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 public class WebSecurityConfig {
 
     private final TokenProvider tokenProvider;
+    private final LoginSuccessHandler loginSuccessHandler;
 
     @Bean
     public WebSecurityCustomizer configure(){
@@ -31,8 +33,9 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         return http.authorizeHttpRequests(auth -> auth.requestMatchers("/login","/signup","/user","/error","/api/token").permitAll().anyRequest().authenticated())
-                .formLogin(formLogin -> formLogin.loginPage("/login").defaultSuccessUrl("/main").usernameParameter("email"))
-                .logout(logout -> logout.logoutSuccessUrl("/login").invalidateHttpSession(true))
+                .formLogin(formLogin -> formLogin.loginPage("/login").successHandler(loginSuccessHandler).usernameParameter("email"))
+                .logout(logout -> logout.logoutSuccessUrl("/login").invalidateHttpSession(true)
+                        .deleteCookies(LoginSuccessHandler.REFRESH_TOKEN_COOKIE_NAME))
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())

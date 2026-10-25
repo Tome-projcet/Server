@@ -44,8 +44,9 @@ public class ArticlesApiController {
     }
 
     @PutMapping("/api/articles/{id}/good/up")
-    public ResponseEntity<Void> upgood(@PathVariable Long id){
-        articleUseCase.upgood(id);
+    public ResponseEntity<Void> upgood(@PathVariable Long id,
+                                       @AuthenticationPrincipal User user){
+        articleUseCase.upgood(id, user);
 
         return ResponseEntity.ok().build();
     }

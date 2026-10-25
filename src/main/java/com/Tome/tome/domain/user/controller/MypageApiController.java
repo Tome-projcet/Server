@@ -5,6 +5,7 @@ import com.Tome.tome.domain.user.dto.PageUserResponse;
 import com.Tome.tome.domain.user.entity.User;
 import com.Tome.tome.domain.user.port.in.UserMostUseCase;
 import com.Tome.tome.domain.user.port.in.UserUseCase;
+import com.Tome.tome.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,10 +18,12 @@ public class MypageApiController {
 
     private final UserUseCase userUseCase;
     private final UserMostUseCase userMostUseCase;
+    private final UserRepository userRepository;
 
     @GetMapping("/api/mypage")
     public ResponseEntity<PageUserResponse> viewmypage(@AuthenticationPrincipal User user){
-        PageUserResponse pageUserResponse = PageUserResponse.from(user);
+        User user1 = userRepository.findById(user.getId()).orElseThrow();
+        PageUserResponse pageUserResponse = PageUserResponse.from(user1);
         return ResponseEntity.status(200).body(pageUserResponse);
     }
 
@@ -45,9 +48,12 @@ public class MypageApiController {
 
     @PutMapping("/api/mypage/update/nickname")
     public ResponseEntity<PageUserResponse> updateNickname(@AuthenticationPrincipal User user, String nickname){
-        User updateuser = userUseCase.updateNickname(user.getId(), nickname);
-
-        return ResponseEntity.ok().body(PageUserResponse.from(updateuser));
+        try{
+            User updateuser = userUseCase.updateNickname(user.getId(), nickname);
+            return ResponseEntity.ok().body(PageUserResponse.from(updateuser));
+        } catch (IllegalArgumentException i){
+            return ResponseEntity.status(404).build();
+        }
     }
 
     @PutMapping("/api/mypage/update/profile")

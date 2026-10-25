@@ -14,7 +14,4 @@ public interface articlesRepository extends JpaRepository<Articles, Long> {
     Optional<Articles> findByTime(Date time);
     Optional<Articles> findByGood(int good);
 
-    @Modifying(flushAutomatically = true, clearAutomatically = true)
-    @Query("update Articles a set a.good = a.good + 1 where a.id = :id")
-    int increaseGood(@Param("id") Long id);
 }

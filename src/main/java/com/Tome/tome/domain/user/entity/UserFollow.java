@@ -19,7 +19,7 @@ public class UserFollow {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "main_user_id")
+    @JoinColumn(name = "main_user_id", unique = true)
     private User mainUser;
 
     @ManyToOne(fetch = FetchType.LAZY)

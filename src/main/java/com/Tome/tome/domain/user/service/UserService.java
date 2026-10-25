@@ -90,7 +90,12 @@ public class UserService implements UserUseCase {
     @Override
     @Transactional
     public User updateNickname(Long userId, String nickname){
-        return findById(userId).update(nickname);
+        if(userRepository.findByNickname(nickname).isPresent()){
+            throw new IllegalArgumentException("이미 사용중인 닉네임 입니다");
+        } else {
+            User user = userRepository.findById(userId).orElseThrow();
+            return user.update(nickname);
+        }
     }
 
     @Override
@@ -116,4 +121,6 @@ public class UserService implements UserUseCase {
             userGenreRepository.save(UserGenre.builder().name(genreName).user(user).build());
         }
     }
+
+
 }
