@@ -7,7 +7,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Getter
@@ -31,7 +30,7 @@ public class Articles {
     @Column(name = "time")
     private LocalDateTime time;
 
-    @Column(name = "bookreport")
+    @Column(name = "bookreport", columnDefinition = "TEXT")
     private String bookreport;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -50,7 +49,11 @@ public class Articles {
         this.bookreport = bookreport;
     }
 
-    public void upgood(){
+    public void upGood(){
         this.good += 1;
+    }
+
+    public void downGood(){
+        this.good -=1;
     }
 }

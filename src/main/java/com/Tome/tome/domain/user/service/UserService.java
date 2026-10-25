@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
 @Service
@@ -22,6 +23,8 @@ public class UserService implements UserUseCase {
     private final UserGenreRepository userGenreRepository;
     private final UserFollowRepository userFollowRepository;
     private final PasswordEncoder passwordEncoder;
+
+    private final static Pattern PROFILE_NAME = Pattern.compile("^https?://\\S+$");
 
     @Override
     public Long save(AddUserRequest dto) {
@@ -90,7 +93,18 @@ public class UserService implements UserUseCase {
     @Override
     @Transactional
     public User updateNickname(Long userId, String nickname){
-        return findById(userId).update(nickname);
+        if(nickname == null || nickname.isBlank()){
+            throw new IllegalArgumentException("이름이 비어있습니다");
+        }
+        User user = userRepository.findById(userId).orElseThrow();
+        if(nickname.equals(user.getNickname())){
+            throw new IllegalArgumentException("동일한 닉네임 입니다");
+        }
+        if(userRepository.findByNickname(nickname).isPresent()){
+            throw new IllegalArgumentException("이미 사용중인 닉네임 입니다");
+        }
+        return user.update(nickname);
+
     }
 
     @Override
@@ -102,6 +116,9 @@ public class UserService implements UserUseCase {
     @Override
     @Transactional
     public User updateProfileUrl(Long userId, String url){
+        if(url == null || !PROFILE_NAME.matcher(url).matches()){
+            throw new IllegalArgumentException("올바른 url을 입력해주세요");
+        }
         return findById(userId).UpdateProfileUrl(url);
     }
 
@@ -116,4 +133,6 @@ public class UserService implements UserUseCase {
             userGenreRepository.save(UserGenre.builder().name(genreName).user(user).build());
         }
     }
+
+
 }

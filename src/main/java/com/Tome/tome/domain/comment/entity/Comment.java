@@ -24,7 +24,7 @@ public class Comment {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "comment")
+    @Column(name = "comment", columnDefinition = "TEXT")
     private String comment;
 
     @Column(name = "good")

@@ -12,6 +12,7 @@
 
 # Package Files #
 *.jar
+!gradle/wrapper/gradle-wrapper.jar
 *.war
 *.nar
 *.ear
@@ -24,3 +25,9 @@ hs_err_pid*
 replay_pid*
 
 .env
+# build / IDE / local data
+build/
+out/
+.gradle/
+data/
+.DS_Store

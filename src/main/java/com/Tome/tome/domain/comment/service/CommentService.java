@@ -35,8 +35,11 @@ public class CommentService implements CommentUseCase {
 
     @Override
     @Transactional
-    public Comment update(Long id, UpdateCommentRequest request){
+    public Comment update(Long id, UpdateCommentRequest request, User user){
        Comment comment = commentRepository.findById(id).orElseThrow(()->new IllegalArgumentException("not found " + id));
+       if(!user.getId().equals(comment.getUser().getId())){
+           throw new IllegalArgumentException("사용자가 일치하지 않습니다");
+       }
        comment.update(request.getComment());
 
        return comment;

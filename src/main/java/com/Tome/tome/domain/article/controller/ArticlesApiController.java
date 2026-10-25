@@ -1,9 +1,9 @@
 package com.Tome.tome.domain.article.controller;
 
-import com.Tome.tome.domain.article.dto.AddArticleRequest;
-import com.Tome.tome.domain.article.dto.ArticleViewResponses;
-import com.Tome.tome.domain.article.dto.UpdateArticleRequest;
-import com.Tome.tome.domain.article.dto.articleResponses;
+import com.Tome.tome.domain.article.dto.request.AddArticleRequest;
+import com.Tome.tome.domain.article.dto.reponse.ArticleViewResponses;
+import com.Tome.tome.domain.article.dto.request.UpdateArticleRequest;
+import com.Tome.tome.domain.article.dto.reponse.articleResponses;
 import com.Tome.tome.domain.article.entity.Articles;
 import com.Tome.tome.domain.article.port.in.ArticleUseCase;
 import com.Tome.tome.domain.user.entity.User;
@@ -44,8 +44,9 @@ public class ArticlesApiController {
     }
 
     @PutMapping("/api/articles/{id}/good/up")
-    public ResponseEntity<Void> upgood(@PathVariable Long id){
-        articleUseCase.upgood(id);
+    public ResponseEntity<Void> upgood(@PathVariable Long id,
+                                       @AuthenticationPrincipal User user){
+        articleUseCase.upgood(id, user);
 
         return ResponseEntity.ok().build();
     }
