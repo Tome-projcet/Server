@@ -11,4 +11,6 @@ public interface ArticleGoodRepository extends JpaRepository<ArticleGood, Long> 
     Optional<ArticleGood> findByUserAndArticles(User user, Articles articles);
 
     void deleteByArticlesAndUser(Articles articles, User user);
+
+    void deleteAllByArticles(Articles articles);
 }

@@ -48,12 +48,8 @@ public class MypageApiController {
 
     @PutMapping("/api/mypage/update/nickname")
     public ResponseEntity<PageUserResponse> updateNickname(@AuthenticationPrincipal User user, String nickname){
-        try{
             User updateuser = userUseCase.updateNickname(user.getId(), nickname);
             return ResponseEntity.ok().body(PageUserResponse.from(updateuser));
-        } catch (IllegalArgumentException i){
-            return ResponseEntity.status(404).build();
-        }
     }
 
     @PutMapping("/api/mypage/update/profile")

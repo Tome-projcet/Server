@@ -2,6 +2,7 @@ package com.Tome.tome.domain.comment.controller;
 
 import com.Tome.tome.domain.comment.dto.AddCommentRequest;
 import com.Tome.tome.domain.comment.dto.CommentResponses;
+import com.Tome.tome.domain.comment.dto.UpdateCommentRequest;
 import com.Tome.tome.domain.comment.entity.Comment;
 import com.Tome.tome.domain.comment.port.in.CommentUseCase;
 import com.Tome.tome.domain.user.entity.User;
@@ -37,5 +38,12 @@ public class CommentController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.status(404).build();
+    }
+
+    @PutMapping("/api/articles/comments/{id}")
+    public ResponseEntity<CommentResponses> updateComment(@PathVariable Long id, @AuthenticationPrincipal User user,
+                                                 @RequestBody UpdateCommentRequest request){
+            Comment comment = commentUseCase.update(id, request, user);
+            return ResponseEntity.ok().body(new CommentResponses(comment));
     }
 }

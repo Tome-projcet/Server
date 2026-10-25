@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "article_good")
+@Table(name = "article_good", uniqueConstraints = @UniqueConstraint(columnNames = {"article_id", "user_id"}))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class ArticleGood {
@@ -19,7 +19,7 @@ public class ArticleGood {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "article_id", unique = true)
+    @JoinColumn(name = "article_id")
     private Articles articles;
 
     @ManyToOne

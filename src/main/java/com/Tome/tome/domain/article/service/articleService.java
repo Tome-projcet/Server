@@ -51,10 +51,8 @@ public class articleService implements ArticleUseCase {
     @Override
     @Transactional
     public void upgood(Long id, User user){
-        if(articlesRepository.findById(id).isEmpty()){
-            throw new IllegalArgumentException("not found " + id);
-        }
-        Articles articles = articlesRepository.findById(id).orElseThrow();
+        Articles articles = articlesRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("not found " + id));
         if(articleGoodRepository.findByUserAndArticles(user, articles).isPresent()){
             articles.downGood();
             articleGoodRepository.deleteByArticlesAndUser(articles, user);
@@ -75,6 +73,7 @@ public class articleService implements ArticleUseCase {
         }
 
         commentRepository.deleteByArticles(articles);
+        articleGoodRepository.deleteAllByArticles(articles);
         articleGenreRepository.deleteByArticles(articles);
         articlesRepository.delete(articles);
         return true;

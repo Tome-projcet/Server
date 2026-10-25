@@ -32,4 +32,4 @@ server:
 jwt:
   issuer: kmk541124@gmail.com
   # 운영에서는 반드시 .env 또는 환경변수 JWT_SECRET_KEY(32바이트 이상)로 바꿔서 쓸 것
-  secret_key: ${JWT_SECRET_KEY:tome-local-dev-only-secret-key-change-me-2026}
+  secret_key: ${JWT_SECRET_KEY}
