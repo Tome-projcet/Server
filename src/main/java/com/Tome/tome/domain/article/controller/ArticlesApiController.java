@@ -1,9 +1,9 @@
 package com.Tome.tome.domain.article.controller;
 
-import com.Tome.tome.domain.article.dto.AddArticleRequest;
-import com.Tome.tome.domain.article.dto.ArticleViewResponses;
-import com.Tome.tome.domain.article.dto.UpdateArticleRequest;
-import com.Tome.tome.domain.article.dto.articleResponses;
+import com.Tome.tome.domain.article.dto.request.AddArticleRequest;
+import com.Tome.tome.domain.article.dto.reponse.ArticleViewResponses;
+import com.Tome.tome.domain.article.dto.request.UpdateArticleRequest;
+import com.Tome.tome.domain.article.dto.reponse.articleResponses;
 import com.Tome.tome.domain.article.entity.Articles;
 import com.Tome.tome.domain.article.port.in.ArticleUseCase;
 import com.Tome.tome.domain.user.entity.User;

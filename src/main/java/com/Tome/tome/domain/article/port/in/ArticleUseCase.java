@@ -1,7 +1,7 @@
 package com.Tome.tome.domain.article.port.in;
 
-import com.Tome.tome.domain.article.dto.AddArticleRequest;
-import com.Tome.tome.domain.article.dto.UpdateArticleRequest;
+import com.Tome.tome.domain.article.dto.request.AddArticleRequest;
+import com.Tome.tome.domain.article.dto.request.UpdateArticleRequest;
 import com.Tome.tome.domain.article.entity.Articles;
 import com.Tome.tome.domain.user.entity.User;
 

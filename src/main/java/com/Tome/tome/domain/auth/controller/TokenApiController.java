@@ -1,7 +1,7 @@
 package com.Tome.tome.domain.auth.controller;
 
-import com.Tome.tome.domain.auth.dto.CreateAccessTokenRequest;
-import com.Tome.tome.domain.auth.dto.CreateAccessTokenResponse;
+import com.Tome.tome.domain.auth.dto.request.CreateAccessTokenRequest;
+import com.Tome.tome.domain.auth.dto.response.CreateAccessTokenResponse;
 import com.Tome.tome.domain.auth.handler.LoginSuccessHandler;
 import com.Tome.tome.domain.auth.port.in.TokenUseCase;
 import lombok.RequiredArgsConstructor;

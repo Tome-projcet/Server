@@ -1,4 +1,4 @@
-package com.Tome.tome.domain.user.controller;
+package com.Tome.tome.domain.user.controller.mypage;
 
 import com.Tome.tome.domain.genre.dto.GenreRequest;
 import com.Tome.tome.domain.user.dto.PageUserResponse;

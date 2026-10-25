@@ -1,7 +1,7 @@
 package com.Tome.tome.domain.article.service;
 
-import com.Tome.tome.domain.article.dto.AddArticleRequest;
-import com.Tome.tome.domain.article.dto.UpdateArticleRequest;
+import com.Tome.tome.domain.article.dto.request.AddArticleRequest;
+import com.Tome.tome.domain.article.dto.request.UpdateArticleRequest;
 import com.Tome.tome.domain.article.entity.ArticleGood;
 import com.Tome.tome.domain.article.entity.Articles;
 import com.Tome.tome.domain.article.port.in.ArticleUseCase;
@@ -14,7 +14,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

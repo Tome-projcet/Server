@@ -1,6 +1,6 @@
 package com.Tome.tome.domain.article.controller;
 
-import com.Tome.tome.domain.article.dto.ArticleViewResponses;
+import com.Tome.tome.domain.article.dto.reponse.ArticleViewResponses;
 import com.Tome.tome.domain.article.entity.Articles;
 import com.Tome.tome.domain.article.port.in.ArticleUseCase;
 import lombok.RequiredArgsConstructor;

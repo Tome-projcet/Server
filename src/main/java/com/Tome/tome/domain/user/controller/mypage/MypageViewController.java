@@ -1,4 +1,4 @@
-package com.Tome.tome.domain.user.controller;
+package com.Tome.tome.domain.user.controller.mypage;
 
 import com.Tome.tome.domain.user.entity.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

@@ -1,10 +1,7 @@
-package com.Tome.tome.domain.article.dto;
+package com.Tome.tome.domain.article.dto.reponse;
 
 import com.Tome.tome.domain.article.entity.Articles;
-import jakarta.persistence.Column;
 import lombok.Getter;
-
-import java.util.Date;
 
 
 @Getter

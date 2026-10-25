@@ -1,4 +1,4 @@
-package com.Tome.tome.domain.article.dto;
+package com.Tome.tome.domain.article.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

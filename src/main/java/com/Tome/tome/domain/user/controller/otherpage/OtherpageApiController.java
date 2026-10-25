@@ -1,4 +1,4 @@
-package com.Tome.tome.domain.user.controller;
+package com.Tome.tome.domain.user.controller.otherpage;
 
 import com.Tome.tome.domain.user.dto.PageUserResponse;
 import com.Tome.tome.domain.user.entity.User;

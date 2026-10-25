@@ -1,4 +1,4 @@
-package com.Tome.tome.domain.auth.dto;
+package com.Tome.tome.domain.auth.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;
