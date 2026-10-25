@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
 @Service
@@ -22,6 +23,8 @@ public class UserService implements UserUseCase {
     private final UserGenreRepository userGenreRepository;
     private final UserFollowRepository userFollowRepository;
     private final PasswordEncoder passwordEncoder;
+
+    private final static Pattern PROFILE_NAME = Pattern.compile("^http[A-Za-z]://[A-Za-z]*$");
 
     @Override
     public Long save(AddUserRequest dto) {
@@ -107,6 +110,9 @@ public class UserService implements UserUseCase {
     @Override
     @Transactional
     public User updateProfileUrl(Long userId, String url){
+        if(!PROFILE_NAME.matcher(url).matches()){
+            throw new IllegalArgumentException("올바른 url을 입력해주세요");
+        }
         return findById(userId).UpdateProfileUrl(url);
     }
 
