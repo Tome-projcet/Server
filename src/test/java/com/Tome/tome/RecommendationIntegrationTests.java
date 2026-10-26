@@ -1,11 +1,19 @@
 package com.Tome.tome;
 
-import com.Tome.tome.catalog.*;
-import com.Tome.tome.config.BookApiConfig;
-import com.Tome.tome.controller.*;
-import com.Tome.tome.domain.*;
-import com.Tome.tome.repository.*;
-import com.Tome.tome.service.*;
+import com.Tome.tome.domain.book.infra.*;
+import com.Tome.tome.global.config.BookApiConfig;
+import com.Tome.tome.domain.book.controller.*;
+import com.Tome.tome.domain.genre.controller.*;
+import com.Tome.tome.domain.book.entity.Book;
+import com.Tome.tome.domain.genre.entity.Genre;
+import com.Tome.tome.domain.user.entity.User;
+import com.Tome.tome.domain.user.entity.UserGenre;
+import com.Tome.tome.domain.book.repository.BookRepository;
+import com.Tome.tome.domain.genre.repository.GenreRepository;
+import com.Tome.tome.domain.user.repository.UserRepository;
+import com.Tome.tome.domain.user.repository.UserGenreRepository;
+import com.Tome.tome.domain.book.service.*;
+import com.Tome.tome.domain.genre.service.GenrePreferenceService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -107,7 +115,9 @@ class RecommendationIntegrationTests {
     }
     @Test void controllersEnforceOwnershipValidationAndSyncToken() throws Exception {
         var user=user();
-        var mvc=MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
+        var mvc=MockMvcBuilders.webAppContextSetup(context)
+                .defaultRequest(get("/").with(org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user(user)))
+                .apply(springSecurity()).build();
         try {
             SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user,"",user.getAuthorities()));
             mvc.perform(get("/api/recommend/books")).andExpect(status().isOk());
@@ -116,7 +126,7 @@ class RecommendationIntegrationTests {
             mvc.perform(get("/api/books/search").param("query"," ")).andExpect(status().isBadRequest());
             mvc.perform(get("/api/genres")).andExpect(status().isOk()).andExpect(jsonPath("$.length()").value(13));
             mvc.perform(get("/api/books/search").param("query","소설")).andExpect(status().isServiceUnavailable());
-            mvc.perform(post("/api/books/sync/popular")).andExpect(status().isForbidden());
+            mvc.perform(post("/api/books/sync/popular").with(org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf())).andExpect(status().isForbidden());
         } finally { SecurityContextHolder.clearContext(); }
     }
 }

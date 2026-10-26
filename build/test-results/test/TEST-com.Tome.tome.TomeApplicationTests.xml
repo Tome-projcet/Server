@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.Tome.tome.TomeApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-10-14T07:35:21.705Z" hostname="loser.local" time="0.005">
+<testsuite name="com.Tome.tome.TomeApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-10-26T11:27:10.818Z" hostname="loser.local" time="0.005">
   <properties/>
   <testcase name="contextLoads()" classname="com.Tome.tome.TomeApplicationTests" time="0.001"/>
-  <system-out><![CDATA[2026-10-14T16:35:21.706+09:00  INFO 1953 --- [Tome] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.Tome.tome.TomeApplicationTests]: TomeApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-10-14T16:35:21.707+09:00  INFO 1953 --- [Tome] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.Tome.tome.TomeApplication for test class com.Tome.tome.TomeApplicationTests
-2026-10-14T16:35:21.707+09:00  INFO 1953 --- [Tome] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.Tome.tome.TomeApplicationTests]: TomeApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-10-14T16:35:21.708+09:00  INFO 1953 --- [Tome] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.Tome.tome.TomeApplication for test class com.Tome.tome.TomeApplicationTests
+  <system-out><![CDATA[2026-10-26T20:27:10.819+09:00  INFO 59431 --- [Tome] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.Tome.tome.TomeApplicationTests]: TomeApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-26T20:27:10.820+09:00  INFO 59431 --- [Tome] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.Tome.tome.TomeApplication for test class com.Tome.tome.TomeApplicationTests
+2026-10-26T20:27:10.820+09:00  INFO 59431 --- [Tome] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.Tome.tome.TomeApplicationTests]: TomeApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-26T20:27:10.820+09:00  INFO 59431 --- [Tome] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.Tome.tome.TomeApplication for test class com.Tome.tome.TomeApplicationTests
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

@@ -1,7 +1,9 @@
 package com.Tome.tome.service;
+import com.Tome.tome.domain.book.service.BookCatalogService;
+import com.Tome.tome.domain.book.service.BookCatalogStore;
 
-import com.Tome.tome.catalog.*;
-import com.Tome.tome.config.BookApiConfig;
+import com.Tome.tome.domain.book.infra.*;
+import com.Tome.tome.global.config.BookApiConfig;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.*;
@@ -21,7 +23,7 @@ class BookCatalogServiceTest {
         when(library.popular(start, end, 10)).thenReturn(List.of(first, second));
         when(kakao.findByIsbn(first.isbn13())).thenThrow(new BookApiException("quota"));
         when(store.upsert(List.of(first, second))).thenReturn(2);
-        var result = new BookCatalogService(kakao, library, store, config, mock(com.Tome.tome.repository.BookRepository.class)).syncPopular(start, end, 10);
+        var result = new BookCatalogService(kakao, library, store, config, mock(com.Tome.tome.domain.book.repository.BookRepository.class)).syncPopular(start, end, 10);
         assertEquals(2, result.saved()); assertEquals(1, result.warnings().size());
         verify(kakao, never()).findByIsbn(second.isbn13());
         verify(store).upsert(List.of(first, second));
@@ -30,7 +32,7 @@ class BookCatalogServiceTest {
         var library = mock(LibraryBookClient.class);
         var store = mock(BookCatalogStore.class);
         when(library.popular(any(), any(), anyInt())).thenThrow(new BookApiException("offline"));
-        var service = new BookCatalogService(mock(KakaoBookClient.class), library, store, mock(BookApiConfig.class), mock(com.Tome.tome.repository.BookRepository.class));
+        var service = new BookCatalogService(mock(KakaoBookClient.class), library, store, mock(BookApiConfig.class), mock(com.Tome.tome.domain.book.repository.BookRepository.class));
         assertThrows(BookApiException.class, () -> service.syncPopular(LocalDate.now(), LocalDate.now(), 10));
         verifyNoInteractions(store);
     }

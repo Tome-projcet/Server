@@ -1,6 +1,6 @@
-package com.Tome.tome.catalog;
+package com.Tome.tome.domain.book.infra;
 
-import com.Tome.tome.config.BookApiConfig;
+import com.Tome.tome.global.config.BookApiConfig;
 import com.sun.net.httpserver.HttpServer;
 import org.junit.jupiter.api.*;
 import org.springframework.test.util.ReflectionTestUtils;
