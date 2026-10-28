@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -28,17 +29,23 @@ public class UserService implements UserUseCase {
 
     @Override
     public Long save(AddUserRequest dto) {
+        if (dto.getEmail() == null || dto.getEmail().isBlank()) {
+            throw new IllegalArgumentException("이메일을 입력해주세요");
+        }
         if (dto.getPassword() == null || dto.getPassword().length() < 8) {
-            throw new IllegalArgumentException("조건이 틀렸습니다");
+            throw new IllegalArgumentException("비밀번호는 8자 이상이어야 합니다");
+        }
+        if (dto.getNickname() == null || dto.getNickname().isBlank()) {
+            throw new IllegalArgumentException("닉네임을 입력해주세요");
         }
 
         Optional<User> result = userRepository.findByEmail(dto.getEmail());
         if (result.isPresent()) {
-            throw new IllegalArgumentException("이메일 존재");
+            throw new IllegalArgumentException("이미 가입된 이메일입니다");
         } else {
             result = userRepository.findByNickname(dto.getNickname());
             if (result.isPresent()) {
-                throw new IllegalArgumentException("닉네임 존재");
+                throw new IllegalArgumentException("이미 사용중인 닉네임 입니다");
             } else {
                 return userRepository.save(User.builder().email(dto.getEmail()).nickname(dto.getNickname()).password(passwordEncoder.encode(dto.getPassword())).build()).getId();
             }
@@ -47,12 +54,12 @@ public class UserService implements UserUseCase {
 
     @Override
     public User findById(Long userId){
-        return userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("not found " + userId));
+        return userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("사용자를 찾을 수 없습니다"));
     }
 
     @Override
     public User findByEmail(String email){
-        return userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("not found " + email));
+        return userRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("사용자를 찾을 수 없습니다"));
     }
 
     @Override
@@ -61,7 +68,7 @@ public class UserService implements UserUseCase {
         User targetuser = findById(loginUser.getId());
         User user = findById(id);
         if(targetuser.getId().equals(user.getId())){
-            return false;
+            throw new IllegalArgumentException("자기 자신은 팔로우할 수 없습니다");
         }
 
         if(userFollowRepository.findByUserAndMainUser(targetuser, user).isPresent()){
@@ -80,23 +87,23 @@ public class UserService implements UserUseCase {
     }
 
     @Override
+    public boolean isFirstLogin(Long userId){
+        return findById(userId).getfirst();
+    }
+
+    @Override
     @Transactional
-    public boolean checkFirstLogin(Long userId){
-        User user = findById(userId);
-        if(user.getfirst()){
-            user.updateFirst();
-            return true;
-        }
-        return false;
+    public void completeFirstLogin(Long userId){
+        findById(userId).updateFirst();
     }
 
     @Override
     @Transactional
     public User updateNickname(Long userId, String nickname){
         if(nickname == null || nickname.isBlank()){
-            throw new IllegalArgumentException("이름이 비어있습니다");
+            throw new IllegalArgumentException("닉네임을 입력해주세요");
         }
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = findById(userId);
         if(nickname.equals(user.getNickname())){
             throw new IllegalArgumentException("동일한 닉네임 입니다");
         }
@@ -110,6 +117,9 @@ public class UserService implements UserUseCase {
     @Override
     @Transactional
     public User updateWriter(Long userId, String writer){
+        if(writer == null || writer.isBlank()){
+            throw new IllegalArgumentException("인생 작가를 입력해주세요");
+        }
         return findById(userId).updateWriter(writer);
     }
 
@@ -125,6 +135,9 @@ public class UserService implements UserUseCase {
     @Override
     @Transactional
     public void checkGenre(User user, String genreName){
+        if(genreName == null || genreName.isBlank()){
+            throw new IllegalArgumentException("장르를 입력해주세요");
+        }
         Optional<UserGenre> existing = userGenreRepository.findByUserAndName(user, genreName);
 
         if (existing.isPresent()) {

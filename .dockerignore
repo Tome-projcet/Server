@@ -1,0 +1,9 @@
+build
+out
+.gradle
+.idea
+.git
+.env
+data
+_to_delete
+deploy

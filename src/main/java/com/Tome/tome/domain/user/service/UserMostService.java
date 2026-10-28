@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -33,7 +34,7 @@ public class UserMostService implements UserMostUseCase {
 
         UserMostGenre userMostGenre = userMostGenreRepository.findByUser_Id(user.getId())
                 .orElseGet(() -> userMostGenreRepository.save(new UserMostGenre(
-                        userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("not found" + user.getId())))));
+                        userRepository.findById(user.getId()).orElseThrow(() -> new NoSuchElementException("사용자를 찾을 수 없습니다")))));
 
         userMostGenre.setFirst(first != null ? first.getName() : null);
         userMostGenre.setSecond(second != null ? second.getName() : null);

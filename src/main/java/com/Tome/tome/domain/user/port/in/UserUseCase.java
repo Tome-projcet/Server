@@ -12,7 +12,9 @@ public interface UserUseCase {
 
     boolean upfollwing(User loginUser, Long id);
 
-    boolean checkFirstLogin(Long userId);
+    boolean isFirstLogin(Long userId);
+
+    void completeFirstLogin(Long userId);
 
     User updateNickname(Long userId, String nickname);
 

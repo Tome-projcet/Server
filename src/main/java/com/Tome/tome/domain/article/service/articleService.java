@@ -10,6 +10,7 @@ import com.Tome.tome.domain.article.repository.ArticleGoodRepository;
 import com.Tome.tome.domain.article.repository.articlesRepository;
 import com.Tome.tome.domain.comment.repository.CommentRepository;
 import com.Tome.tome.domain.user.entity.User;
+import com.Tome.tome.global.exception.ForbiddenException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -31,6 +33,9 @@ public class articleService implements ArticleUseCase {
 
     @Override
     public Articles save(AddArticleRequest request, User user){
+        if(request.getBookreport() == null || request.getBookreport().isBlank()){
+            throw new IllegalArgumentException("독후감 내용을 입력해주세요");
+        }
         Articles article = Articles.builder()
                 .bookreport(request.getBookreport()).user(user).build();
         return articlesRepository.save(article);
@@ -44,14 +49,14 @@ public class articleService implements ArticleUseCase {
 
     @Override
     public Articles findById(Long id){
-        return articlesRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("not found " + id));
+        return articlesRepository.findById(id).orElseThrow(() -> new NoSuchElementException("독후감을 찾을 수 없습니다"));
     }
 
     @Override
     @Transactional
     public void upgood(Long id, User user){
         Articles articles = articlesRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("not found " + id));
+                .orElseThrow(() -> new NoSuchElementException("독후감을 찾을 수 없습니다"));
         if(articleGoodRepository.findByUserAndArticles(user, articles).isPresent()){
             articles.downGood();
             articleGoodRepository.deleteByArticlesAndUser(articles, user);
@@ -66,9 +71,9 @@ public class articleService implements ArticleUseCase {
     @Override
     @Transactional
     public boolean delete(Long id, User user){
-        Articles articles = articlesRepository.findById(id).orElseThrow();
+        Articles articles = findById(id);
         if(!isWriter(articles, user)){
-            return false;
+            throw new ForbiddenException("작성자만 삭제할 수 있습니다");
         }
 
         commentRepository.deleteByArticles(articles);
@@ -81,11 +86,14 @@ public class articleService implements ArticleUseCase {
     @Override
     @Transactional
     public Optional<Articles> update(Long id, UpdateArticleRequest request, User user){
-        Articles articles = articlesRepository.findById(id).orElseThrow();
+        Articles articles = findById(id);
         if(!isWriter(articles, user)){
-            return Optional.empty();
+            throw new ForbiddenException("작성자만 수정할 수 있습니다");
         }
 
+        if(request.getBookreport() == null || request.getBookreport().isBlank()){
+            throw new IllegalArgumentException("독후감 내용을 입력해주세요");
+        }
         articles.update(request.getBookreport());
         return Optional.of(articles);
     }

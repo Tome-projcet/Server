@@ -25,8 +25,13 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
         if (header != null && header.startsWith(TOKEN_PREFIX)) {
             String token = header.substring(TOKEN_PREFIX.length());
-            if (tokenProvider.validToken(token)) {
-                SecurityContextHolder.getContext().setAuthentication(tokenProvider.getAuthentication(token));
+            if (tokenProvider.validToken(token, TokenProvider.TYPE_ACCESS)) {
+                try {
+                    SecurityContextHolder.getContext().setAuthentication(tokenProvider.getAuthentication(token));
+                } catch (IllegalArgumentException e) {
+                    // 토큰은 유효하지만 사용자가 삭제된 경우: 인증 없이 진행시켜 401로 응답되게 함
+                    SecurityContextHolder.clearContext();
+                }
             }
         }
 

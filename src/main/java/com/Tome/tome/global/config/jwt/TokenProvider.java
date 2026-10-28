@@ -19,15 +19,19 @@ import java.util.Date;
 @Service
 public class TokenProvider {
 
+    public static final String TYPE_ACCESS = "access";
+    public static final String TYPE_REFRESH = "refresh";
+    private static final String TYPE_CLAIM = "type";
+
     private final JwtProperties jwtProperties;
     private final UserRepository userRepository;
 
-    public String generateToken(User user, Duration expriedAt){
+    public String generateToken(User user, Duration expriedAt, String type){
         Date now = new Date();
-        return makeToken(new Date(now.getTime() + expriedAt.toMillis()),user);
+        return makeToken(new Date(now.getTime() + expriedAt.toMillis()), user, type);
     }
 
-    private String makeToken(Date expriy, User user){
+    private String makeToken(Date expriy, User user, String type){
         Date now = new Date();
 
         return Jwts.builder()
@@ -37,14 +41,15 @@ public class TokenProvider {
                 .expiration(expriy)
                 .subject(user.getEmail())
                 .claim("id", user.getId())
+                .claim(TYPE_CLAIM, type)
                 .signWith(signingKey())
                 .compact();
     }
 
-    public boolean validToken(String token){
+    // 서명·만료 검사에 더해, 토큰 종류(access/refresh)가 기대한 것과 같은지까지 확인
+    public boolean validToken(String token, String type){
         try{
-            getClaims(token);
-            return true;
+            return type.equals(getClaims(token).get(TYPE_CLAIM, String.class));
         } catch (Exception e){
             return false;
         }

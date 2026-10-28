@@ -12,19 +12,21 @@ import java.time.Duration;
 @RequiredArgsConstructor
 @Service
 public class TokenService implements TokenUseCase {
+    public static final Duration ACCESS_TOKEN_DURATION = Duration.ofHours(2);
+
     private final TokenProvider tokenProvider;
     private final RefreshTokenService refreshTokenService;
     private final UserUseCase userUseCase;
 
     @Override
     public String createNewAccessToken(String refreshToken){
-        if(!tokenProvider.validToken(refreshToken)){
-            throw new IllegalArgumentException("Unexpected token");
+        if(!tokenProvider.validToken(refreshToken, TokenProvider.TYPE_REFRESH)){
+            throw new IllegalArgumentException("유효하지 않거나 만료된 리프레시 토큰입니다");
         }
 
         Long userId = refreshTokenService.findByRefreshToken(refreshToken).getUserId();
         User user = userUseCase.findById(userId);
 
-        return tokenProvider.generateToken(user, Duration.ofHours(2));
+        return tokenProvider.generateToken(user, ACCESS_TOKEN_DURATION, TokenProvider.TYPE_ACCESS);
     }
 }
