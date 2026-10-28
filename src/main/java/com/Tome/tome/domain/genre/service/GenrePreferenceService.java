@@ -40,6 +40,7 @@ public class GenrePreferenceService {
         for (UserGenre preference : existing) {
             String name = taxonomy.canonical(preference.getName());
             if (!selected.contains(name) || !retained.add(name)) preferences.delete(preference);
+            else preference.rename(name); // 응답뿐 아니라 DB 이름도 맞춰 main의 checkGenre가 같은 행을 갱신하게 한다.
         }
         for (String name : selected) if (!retained.contains(name)) {
             UserGenre preference = new UserGenre(name, user);

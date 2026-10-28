@@ -40,6 +40,9 @@ class RecommendationIntegrationTests {
     @Autowired RecommendationService recommendation;
     @Autowired GenrePreferenceService preferenceService;
     @Autowired WebApplicationContext context;
+    @Autowired com.Tome.tome.domain.user.service.UserService mainUserService;
+    @Autowired com.Tome.tome.domain.user.service.UserMostService mainUserMostService;
+    @Autowired com.Tome.tome.domain.user.repository.UserMostGenreRepository mostGenres;
     private User user() {
         return users.save(User.builder().email(UUID.randomUUID()+"@example.org").nickname("reader").password("hash").build());
     }
@@ -112,6 +115,31 @@ class RecommendationIntegrationTests {
                 "출판사", "소개".repeat(3000), "소설", 5, "KAKAO");
         catalog.upsert(List.of(record)); books.flush();
         assertEquals(4000, books.findByIsbn13(record.isbn13()).orElseThrow().getDescription().length());
+    }
+    /** main의 장르 기록·상위 장르 계산과 관심사 교체를 연속 실행해 공유 데이터 계약을 확인한다. */
+    @Test void mainGenreTrackingAndRecommendationShareTheSamePreferences() {
+        var user = user();
+        mainUserService.checkGenre(user, "경제경영");
+        mainUserService.checkGenre(user, "경제경영");
+        preferenceService.replace(user.getId(), List.of("경제/경영", "소설"));
+        mainUserService.checkGenre(user, "경제/경영");
+        mainUserMostService.mostGenreset(user);
+        preferences.flush();
+        assertEquals(2, preferences.findByUserAndName(user, "경제/경영").orElseThrow().getCount());
+        assertEquals("경제/경영", mostGenres.findByUser_Id(user.getId()).orElseThrow().getFirst());
+        catalog.upsert(List.of(book(1, "경제/경영", 1), book(2, "소설", 1)));
+        assertEquals("경제/경영", recommendation.getRecommendations(user.getId(), 1).getFirst().getGenre());
+    }
+    /** main의 페이지 기반 도서 조회가 새 수집 데이터와 함께 동작하는지 확인한다. */
+    @Test void mainPagedBookQueryWorksWithCatalogMetadata() {
+        catalog.upsert(List.of(book(1, "소설", 1), book(2, "소설", 2), book(3, "인문", 3)));
+        books.flush();
+        var first = books.findByGenre_Name("소설", org.springframework.data.domain.PageRequest.of(0, 1));
+        var second = books.findByGenre_Name("소설", org.springframework.data.domain.PageRequest.of(1, 1));
+        assertEquals(1, first.size());
+        assertEquals(1, second.size());
+        assertNotEquals(first.getFirst().getId(), second.getFirst().getId());
+        assertEquals("소설", first.getFirst().getGenre().getName());
     }
     @Test void controllersEnforceOwnershipValidationAndSyncToken() throws Exception {
         var user=user();

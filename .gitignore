@@ -12,6 +12,7 @@
 
 # Package Files #
 *.jar
+!gradle/wrapper/gradle-wrapper.jar
 *.war
 *.nar
 *.ear
@@ -24,5 +25,12 @@ hs_err_pid*
 replay_pid*
 
 .env
-# Keep the Gradle Wrapper bootstrap JAR in version control.
-!gradle/wrapper/gradle-wrapper.jar
+# build / IDE / local data
+build/
+out/
+.gradle/
+data/
+.DS_Store
+
+# Retired Aladin sources are not part of the application.
+_to_delete/
