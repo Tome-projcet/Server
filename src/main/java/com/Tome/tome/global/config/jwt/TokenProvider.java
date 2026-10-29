@@ -46,7 +46,6 @@ public class TokenProvider {
                 .compact();
     }
 
-    // 서명·만료 검사에 더해, 토큰 종류(access/refresh)가 기대한 것과 같은지까지 확인
     public boolean validToken(String token, String type){
         try{
             return type.equals(getClaims(token).get(TYPE_CLAIM, String.class));

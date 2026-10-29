@@ -12,7 +12,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Component;
 
-// 로그아웃 시 DB의 리프레시 토큰을 지워서, 로그아웃 후에는 재발급이 안 되게 함
 @Component
 @RequiredArgsConstructor
 public class RefreshTokenLogoutHandler implements LogoutHandler {
@@ -30,7 +29,6 @@ public class RefreshTokenLogoutHandler implements LogoutHandler {
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        // 발급할 때와 같은 secure/sameSite 속성으로 지워야 다른 도메인의 프론트에서도 쿠키가 삭제된다
         CoolieUtil.addCookie(response, LoginSuccessHandler.REFRESH_TOKEN_COOKIE_NAME, "", 0, cookieSecure, cookieSameSite);
 
         String refreshToken = findRefreshTokenCookie(request);

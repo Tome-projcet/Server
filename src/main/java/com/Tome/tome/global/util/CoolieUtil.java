@@ -7,7 +7,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 
 public class CoolieUtil {
-    // 배포 환경(프론트와 서버 도메인이 다름)에서는 secure=true, sameSite=None 이어야 브라우저가 쿠키를 보낸다
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAge,
                                  boolean secure, String sameSite){
         ResponseCookie cookie = ResponseCookie.from(name, value)

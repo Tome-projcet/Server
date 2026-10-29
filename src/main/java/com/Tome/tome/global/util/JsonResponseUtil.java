@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
 
-// Security 필터(로그인/로그아웃/401/403)에서는 컨트롤러를 거치지 않으므로 JSON을 직접 써서 응답한다
 public class JsonResponseUtil {
 
     public static void write(HttpServletResponse response, int status, Map<String, ?> body) throws IOException {

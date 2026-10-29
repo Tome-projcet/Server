@@ -96,7 +96,6 @@ public class WebSecurityConfig {
                 .build();
     }
 
-    // 프론트엔드(다른 포트/도메인)에서 쿠키를 포함해 호출할 수 있게 허용
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration config = new CorsConfiguration();

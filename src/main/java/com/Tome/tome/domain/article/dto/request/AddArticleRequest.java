@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AddArticleRequest {
     private String bookreport;
+    private String isbn;
 }

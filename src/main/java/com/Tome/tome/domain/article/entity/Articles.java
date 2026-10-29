@@ -1,5 +1,6 @@
 package com.Tome.tome.domain.article.entity;
 
+import com.Tome.tome.domain.book.entity.Book;
 import com.Tome.tome.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -37,12 +38,17 @@ public class Articles {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id")
+    private Book book;
+
 
     @Builder
-    public Articles(String bookreport, User user){
+    public Articles(String bookreport, User user, Book book){
         this.bookreport = bookreport;
         this.good = 0;
         this.user = user;
+        this.book = book;
     }
 
     public void update(String bookreport){

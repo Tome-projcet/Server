@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Map;
 
-// 로그인 실패 시 /login?error 리다이렉트 대신 401 JSON으로 응답
 @Component
 public class LoginFailureHandler implements AuthenticationFailureHandler {
 

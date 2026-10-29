@@ -40,7 +40,6 @@ public class SwaggerConfig {
                                 .bearerFormat("JWT")));
     }
 
-    // /login, /logout은 Spring Security 필터가 처리해서 springdoc이 자동으로 찾지 못하므로 직접 문서에 추가
     @Bean
     public OpenApiCustomizer securityEndpointCustomizer() {
         return openApi -> {

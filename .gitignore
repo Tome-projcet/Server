@@ -32,5 +32,4 @@ out/
 data/
 .DS_Store
 
-# 배포 서버 nginx가 만드는 파일
 deploy/nginx/service-url.inc

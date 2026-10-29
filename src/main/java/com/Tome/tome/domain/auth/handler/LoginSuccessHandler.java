@@ -19,7 +19,6 @@ import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-// 로그인 성공 시 리다이렉트 대신 JSON(액세스 토큰 + 첫 로그인 여부)으로 응답
 @Component
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
