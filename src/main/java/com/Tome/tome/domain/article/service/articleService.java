@@ -90,6 +90,7 @@ public class articleService implements ArticleUseCase {
         commentRepository.deleteByArticles(articles);
         articleGoodRepository.deleteAllByArticles(articles);
         articleGenreRepository.deleteByArticles(articles);
+        bookRepository.deleteById(articles.getBook().getId());
         articlesRepository.delete(articles);
         return true;
     }
