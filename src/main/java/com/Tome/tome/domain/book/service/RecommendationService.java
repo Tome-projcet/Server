@@ -53,7 +53,7 @@ public class RecommendationService implements RecommendationUseCase {
                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed().thenComparing(Map.Entry.comparingByKey()))
                 .limit(5).map(Map.Entry::getKey).toList();
         for (String name : preferred)
-            add(candidates, bookRepository.findByGenre_NameIn(taxonomy.aliases(name), PageRequest.of(0, 60)));
+            add(candidates, bookRepository.findByGenreNameIn(taxonomy.aliases(name), PageRequest.of(0, 60)));
         add(candidates, bookRepository.findAllBy(PageRequest.of(0, 100)));
         if (candidates.isEmpty()) return List.of();
         // 선호도와 대출량을 각각 정규화해 카운트 규모 차이가 점수를 지배하지 않도록 한다.
@@ -61,7 +61,7 @@ public class RecommendationService implements RecommendationUseCase {
         double maxPopularity = candidates.values().stream().mapToDouble(b -> Math.log1p(loans(b))).max().orElse(1);
         double denominator = Math.max(1, maxPopularity);
         List<Book> ranked = candidates.values().stream().sorted(Comparator
-                .<Book>comparingDouble(book -> 0.75 * preferences.getOrDefault(genre(book), 0) / maxPreference
+                .<Book>comparingDouble(book -> 0.75 * preferences.getOrDefault(genre(book, preferences), 0) / maxPreference
                         + 0.25 * Math.log1p(loans(book)) / denominator).reversed()
                 .thenComparing(Book::getIsbn13)).toList();
         List<Book> selected = new ArrayList<>();
@@ -70,20 +70,20 @@ public class RecommendationService implements RecommendationUseCase {
         // 첫 선택에서는 한 장르를 최대 40%까지 담는다. 후보 부족 시에는 아래 단계에서 완화한다.
         int perGenre = Math.max(1, (int) Math.ceil(limit * 0.4));
         for (Book book : ranked) {
-            if (genreCounts.getOrDefault(genre(book), 0) >= perGenre) continue;
+            if (genreCounts.getOrDefault(genre(book, preferences), 0) >= perGenre) continue;
             selected.add(book); used.add(book.getIsbn13());
-            genreCounts.merge(genre(book), 1, Integer::sum);
+            genreCounts.merge(genre(book, preferences), 1, Integer::sum);
             if (selected.size() == limit) break;
         }
         // 다양성 제한으로 자리가 남으면 관심 밖의 장르를 먼저 보완하고, 그래도 부족하면 제한을 푼다.
         List<Book> overflow = new ArrayList<>(ranked);
-        overflow.sort(Comparator.comparingInt(book -> preferences.containsKey(genre(book)) ? 1 : 0));
+        overflow.sort(Comparator.comparingInt(book -> preferences.containsKey(genre(book, preferences)) ? 1 : 0));
         for (Book book : overflow) {
             if (selected.size() == limit) break;
             if (used.add(book.getIsbn13())) selected.add(book);
         }
-        return selected.stream().map(book -> new BookResponseDto(book, preferences.containsKey(genre(book))
-                ? "관심 장르인 '" + genre(book) + "'에 맞는 도서입니다."
+        return selected.stream().map(book -> new BookResponseDto(book, preferences.containsKey(genre(book, preferences))
+                ? "관심 장르인 '" + genre(book, preferences) + "'에 맞는 도서입니다."
                 : loans(book) > 0 ? "도서관에서 많이 대출된 도서입니다." : "서재에서 새로운 분야를 발견해 보세요.")).toList();
     }
     /** ISBN 기준으로 후보를 합쳐 같은 책이 여러 경로에서 들어와도 한 번만 추천한다. */
@@ -92,7 +92,11 @@ public class RecommendationService implements RecommendationUseCase {
             if (book.getIsbn13() != null && !book.getIsbn13().isBlank()) result.putIfAbsent(book.getIsbn13(), book);
     }
     /** 기존 장르 이름을 표준 이름으로 맞춘다. 관계가 없는 기존 행은 기타로 처리한다. */
-    private String genre(Book book) { return taxonomy.canonical(book.getGenre() == null ? null : book.getGenre().getName()); }
+    private String genre(Book book, Map<String, Integer> preferences) {
+        return book.getGenres().stream().map(genre -> taxonomy.canonical(genre.getName()))
+                .max(Comparator.comparingInt(name -> preferences.getOrDefault(name, 0)))
+                .orElse(taxonomy.canonical(null));
+    }
     /** 대출량이 없는 기존 데이터는 0으로 취급한다. */
     private static long loans(Book book) { return book.getLoanCount() == null ? 0 : Math.max(0, book.getLoanCount()); }
 

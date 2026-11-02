@@ -34,7 +34,9 @@ public class GenreController {
     })
     @GetMapping
     public List<GenreResponse> genres() {
-        return catalog.listGenres().stream().map(g -> new GenreResponse(g.getId(), g.getName())).toList();
+        List<String> names = catalog.listGenres();
+        return java.util.stream.IntStream.range(0, names.size())
+                .mapToObj(i -> new GenreResponse((long) i + 1, names.get(i))).toList();
     }
     /** 현재 로그인한 사용자의 장르 이름과 선호 카운트를 반환합니다. */
     @Operation(summary = "내 관심 장르 조회", description = "현재 로그인한 사용자의 장르 이름과 선호 카운트를 반환합니다.")

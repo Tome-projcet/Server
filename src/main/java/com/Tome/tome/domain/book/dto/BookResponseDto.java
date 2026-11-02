@@ -55,7 +55,7 @@ public class BookResponseDto {
         this.bookurl = book.getBookurl();
         this.bookbuyurl = book.getBookbuyurl();
         this.publisher = book.getPublisher();
-        this.genre = book.getGenre() == null ? "기타" : book.getGenre().getName();
+        this.genre = book.getGenres().isEmpty() ? "기타" : book.getGenres().getFirst().getName();
         this.description = book.getDescription();
         this.source = book.getSource();
         this.loanCount = book.getLoanCount() == null ? 0 : book.getLoanCount();
