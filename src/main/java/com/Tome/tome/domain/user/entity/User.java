@@ -28,6 +28,16 @@ public class User implements UserDetails {
     @Column(name = "nickname")
     private String nickname;
 
+    /** 한 사용자의 인생 책. 여러 사용자가 같은 책을 선택하므로 삭제를 전파하지 않는다. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "life_book_id")
+    private com.Tome.tome.domain.book.entity.Book lifeBook;
+
+    /** 선택 해제는 사용자 연결만 제거하고 도서와 독후감은 보존한다. */
+    public void updateLifeBook(com.Tome.tome.domain.book.entity.Book book) {
+        this.lifeBook = book;
+    }
+
     @Column(name = "lifewriter")
     private String lifewriter;
 

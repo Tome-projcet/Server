@@ -10,11 +10,8 @@ import com.Tome.tome.domain.article.repository.ArticleGenreRepository;
 import com.Tome.tome.domain.article.repository.ArticleGoodRepository;
 import com.Tome.tome.domain.article.repository.articlesRepository;
 import com.Tome.tome.domain.book.entity.Book;
-import com.Tome.tome.domain.book.infra.ExternalBook;
-import com.Tome.tome.domain.book.infra.Isbn;
+import com.Tome.tome.domain.book.service.BookSelectionService;
 import com.Tome.tome.domain.book.repository.BookRepository;
-import com.Tome.tome.domain.book.service.BookCatalogService;
-import com.Tome.tome.domain.book.service.BookCatalogStore;
 import com.Tome.tome.domain.comment.repository.CommentRepository;
 import com.Tome.tome.domain.genre.entity.Genre;
 import com.Tome.tome.domain.genre.repository.GenreRepository;
@@ -22,7 +19,6 @@ import com.Tome.tome.domain.user.entity.User;
 import com.Tome.tome.global.exception.ForbiddenException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -41,8 +37,7 @@ public class articleService implements ArticleUseCase {
     private final ArticleGenreRepository articleGenreRepository;
     private final CommentRepository commentRepository;
     private final ArticleGoodRepository articleGoodRepository;
-    private final BookCatalogService bookCatalogService;
-    private final BookCatalogStore bookCatalogStore;
+    private final BookSelectionService bookSelection;
     private final BookRepository bookRepository;
     private final GenreRepository genreRepository;
     private final TransactionTemplate transactionTemplate;
@@ -109,6 +104,7 @@ public class articleService implements ArticleUseCase {
         commentRepository.deleteByArticles(articles);
         articleGoodRepository.deleteAllByArticles(articles);
         articleGenreRepository.deleteByArticles(articles);
+        // 책은 인생 책·다른 독후감에서도 공유하므로 독후감 삭제로 함께 삭제하지 않는다.
         articlesRepository.delete(articles);
         return true;
     }
@@ -142,17 +138,7 @@ public class articleService implements ArticleUseCase {
         if(isbn == null || isbn.isBlank()){
             throw new IllegalArgumentException("책을 선택해주세요");
         }
-        Optional<Book> saved = bookRepository.findByIsbn13(Isbn.normalize(isbn));
-        if(saved.isPresent()){
-            return saved.get();
-        }
-        ExternalBook found = bookCatalogService.details(isbn);
-        try {
-            bookCatalogStore.upsert(List.of(found));
-        } catch (DataIntegrityViolationException e) {
-            // 다른 요청이 같은 책을 먼저 저장했다. 아래에서 그 책을 다시 조회해 사용한다.
-        }
-        return bookRepository.findByIsbn13(found.isbn13())
-                .orElseThrow(() -> new NoSuchElementException("책 정보를 저장하지 못했습니다"));
+        Long bookId = bookSelection.select(isbn);
+        return bookRepository.findById(bookId).orElseThrow(() -> new NoSuchElementException("책을 찾을 수 없습니다"));
     }
 }

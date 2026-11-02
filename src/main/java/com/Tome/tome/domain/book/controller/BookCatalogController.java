@@ -53,15 +53,15 @@ public class BookCatalogController {
     })
     @GetMapping("/{isbn}")
     public ExternalBook details(@Parameter(description = "검사 숫자가 유효한 ISBN10 또는 ISBN13", example = "9788983921987", required = true) @PathVariable String isbn) { return catalog.details(isbn); }
-    /** 정보나루 목록을 ISBN 기준으로 저장·갱신하고 카카오로 최대 20권을 보완합니다. 로그인과 동기화 토큰이 모두 필요합니다. 카카오 실패 시 정보나루 데이터로 저장하고 경고를 반환합니다. */
-    @Operation(summary = "인기 대출 도서 수집·갱신", description = "정보나루 목록을 ISBN 기준으로 저장·갱신하고 카카오로 최대 20권을 보완합니다. 로그인과 동기화 토큰이 모두 필요합니다. 카카오 실패 시 정보나루 데이터로 저장하고 경고를 반환합니다.")
+    /** 정보나루 목록을 ISBN 기준으로 저장·갱신하고 카카오로 최대 20권을 보완합니다. Bearer JWT와 동기화 토큰이 모두 필요합니다. 카카오 실패 시 정보나루 데이터로 저장하고 경고를 반환합니다. */
+    @Operation(summary = "인기 대출 도서 수집·갱신", description = "정보나루 목록을 ISBN 기준으로 저장·갱신하고 카카오로 최대 20권을 보완합니다. Bearer JWT와 동기화 토큰이 모두 필요합니다. 카카오 실패 시 정보나루 데이터로 저장하고 경고를 반환합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "저장·갱신 건수, 기간 및 경고 목록"),
             @ApiResponse(responseCode = "400", description = "날짜 또는 수집 개수 범위 오류", content = @Content(schema = @Schema(example = "{\"message\": \"오류 메시지\"}"))),
             @ApiResponse(responseCode = "403", description = "동기화 토큰 누락 또는 불일치", content = @Content),
             @ApiResponse(responseCode = "503", description = "동기화 토큰 미설정 또는 정보나루 조회 실패", content = @Content(schema = @Schema(example = "{\"message\": \"오류 메시지\"}")))
     })
-    @Parameter(name = "X-XSRF-TOKEN", in = io.swagger.v3.oas.annotations.enums.ParameterIn.HEADER, description = "세션 인증 시 XSRF-TOKEN 쿠키 값을 전달. Bearer JWT 요청은 불필요")
+    @Parameter(name = "X-XSRF-TOKEN", in = io.swagger.v3.oas.annotations.enums.ParameterIn.HEADER, description = "Bearer JWT 요청은 불필요. 로그인 등 쿠키 기반 요청의 CSRF 헤더")
     @PostMapping("/sync/popular")
     public BookCatalogService.SyncResult sync(@Parameter(description = "서버 BOOK_SYNC_TOKEN과 일치하는 운영용 비밀값", required = true, schema = @Schema(type = "string", format = "password")) @RequestHeader(value = "X-Book-Sync-Token", required = false) String token,
             @Parameter(description = "대출 집계 시작일. 기본값: 종료일 29일 전", example = "2026-09-26") @RequestParam(required = false) LocalDate start, @Parameter(description = "대출 집계 종료일. 기본값: 한국 시간 어제. 미래 날짜 금지, 시작일과 차이 최대 366일", example = "2026-10-25") @RequestParam(required = false) LocalDate end,
