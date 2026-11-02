@@ -1,5 +1,6 @@
 package com.Tome.tome.global.exception;
 
+import com.Tome.tome.domain.book.infra.BookApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.Map;
@@ -64,6 +66,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<Map<String, String>> handleNoResource(NoResourceFoundException e) {
         return response(HttpStatus.NOT_FOUND, "존재하지 않는 API입니다", null);
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Map<String, String>> handleResponseStatus(ResponseStatusException e) {
+        return response(HttpStatus.valueOf(e.getStatusCode().value()), e.getReason(), "요청을 처리할 수 없습니다");
+    }
+
+    @ExceptionHandler(BookApiException.class)
+    public ResponseEntity<Map<String, String>> handleBookApi(BookApiException e) {
+        log.warn("도서 API 오류: {}", e.getMessage());
+        return response(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage(), "도서 API를 사용할 수 없습니다");
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

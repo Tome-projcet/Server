@@ -17,9 +17,9 @@ public class ArticleViewResponses {
     private LocalDateTime time;
     private String nickname;
     private String bookurl;
-    private String bookbyUrl;
+    private String bookBuyUrl;
     private String title;
-    private String wirter;
+    private String writer;
 
 
     public ArticleViewResponses(Articles articles){
@@ -31,8 +31,8 @@ public class ArticleViewResponses {
         this.time = articles.getTime();
         this.nickname = articles.getUser() != null ? articles.getUser().getNickname() : null;
         this.bookurl = book.getBookurl();
-        this.bookbyUrl = book.getBookbuyurl();
+        this.bookBuyUrl = book.getBookbuyurl();
         this.title = book.getTitle();
-        this.wirter = book.getWriter();
+        this.writer = book.getWriter();
     }
 }

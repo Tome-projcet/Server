@@ -1,9 +1,11 @@
 package com.Tome.tome.domain.article.controller;
 
+import com.Tome.tome.domain.article.dto.reponse.ArticlesGenreResponse;
 import com.Tome.tome.domain.article.dto.request.AddArticleRequest;
 import com.Tome.tome.domain.article.dto.reponse.ArticleViewResponses;
 import com.Tome.tome.domain.article.dto.request.UpdateArticleRequest;
 import com.Tome.tome.domain.article.dto.reponse.articleResponses;
+import com.Tome.tome.domain.article.entity.ArticleGenre;
 import com.Tome.tome.domain.article.entity.Articles;
 import com.Tome.tome.domain.article.port.in.ArticleUseCase;
 import com.Tome.tome.domain.user.entity.User;
@@ -15,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Tag(name = "Article", description = "독후감 API")
@@ -47,6 +50,19 @@ public class ArticlesApiController {
         Articles articles1 = articleUseCase.findById(id);
 
         return ResponseEntity.status(200).body(new ArticleViewResponses(articles1));
+    }
+
+    @Operation(summary = "게시물의 장르 조회")
+    @GetMapping("/api/articles/{id}/genre")
+    public ResponseEntity<List<ArticlesGenreResponse>> findArticlesGenre(@PathVariable Long id){
+        List<ArticleGenre> l = articleUseCase.findGenre(id);
+        List<ArticlesGenreResponse> list = new ArrayList<>();
+        for(ArticleGenre a : l){
+            ArticlesGenreResponse articlesGenreResponse = ArticlesGenreResponse.from(a);
+            list.add(articlesGenreResponse);
+        }
+
+        return ResponseEntity.ok().body(list);
     }
 
     @Operation(summary = "좋아요 / 좋아요 취소")

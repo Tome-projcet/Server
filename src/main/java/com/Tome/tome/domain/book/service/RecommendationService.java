@@ -82,9 +82,13 @@ public class RecommendationService implements RecommendationUseCase {
             if (selected.size() == limit) break;
             if (used.add(book.getIsbn13())) selected.add(book);
         }
-        return selected.stream().map(book -> new BookResponseDto(book, preferences.containsKey(genre(book, preferences))
-                ? "관심 장르인 '" + genre(book, preferences) + "'에 맞는 도서입니다."
-                : loans(book) > 0 ? "도서관에서 많이 대출된 도서입니다." : "서재에서 새로운 분야를 발견해 보세요.")).toList();
+        return selected.stream().map(book -> {
+            String genre = genre(book, preferences);
+            String reason = preferences.containsKey(genre)
+                    ? "관심 장르인 '" + genre + "'에 맞는 도서입니다."
+                    : loans(book) > 0 ? "도서관에서 많이 대출된 도서입니다." : "서재에서 새로운 분야를 발견해 보세요.";
+            return new BookResponseDto(book, genre, reason);
+        }).toList();
     }
     /** ISBN 기준으로 후보를 합쳐 같은 책이 여러 경로에서 들어와도 한 번만 추천한다. */
     private void add(Map<String, Book> result, List<Book> books) {

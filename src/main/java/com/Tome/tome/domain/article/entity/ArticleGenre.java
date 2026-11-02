@@ -22,7 +22,7 @@ public class ArticleGenre {
     @Column
     private String bookname;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "articles_id")
     private Articles articles;
 

@@ -65,4 +65,9 @@ public class BookResponseDto {
         this(book);
         this.recommendationReason = reason;
     }
+    /** 추천 근거로 고른 장르를 그대로 응답해 genre와 추천 이유가 어긋나지 않게 한다. */
+    public BookResponseDto(Book book, String genre, String reason) {
+        this(book, reason);
+        this.genre = genre;
+    }
 }
