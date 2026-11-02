@@ -9,11 +9,8 @@ import com.Tome.tome.domain.article.repository.ArticleGenreRepository;
 import com.Tome.tome.domain.article.repository.ArticleGoodRepository;
 import com.Tome.tome.domain.article.repository.articlesRepository;
 import com.Tome.tome.domain.book.entity.Book;
-import com.Tome.tome.domain.book.infra.ExternalBook;
-import com.Tome.tome.domain.book.infra.Isbn;
+import com.Tome.tome.domain.book.service.BookSelectionService;
 import com.Tome.tome.domain.book.repository.BookRepository;
-import com.Tome.tome.domain.book.service.BookCatalogService;
-import com.Tome.tome.domain.book.service.BookCatalogStore;
 import com.Tome.tome.domain.comment.repository.CommentRepository;
 import com.Tome.tome.domain.user.entity.User;
 import com.Tome.tome.global.exception.ForbiddenException;
@@ -36,8 +33,7 @@ public class articleService implements ArticleUseCase {
     private final ArticleGenreRepository articleGenreRepository;
     private final CommentRepository commentRepository;
     private final ArticleGoodRepository articleGoodRepository;
-    private final BookCatalogService bookCatalogService;
-    private final BookCatalogStore bookCatalogStore;
+    private final BookSelectionService bookSelection;
     private final BookRepository bookRepository;
 
     @Override
@@ -90,7 +86,7 @@ public class articleService implements ArticleUseCase {
         commentRepository.deleteByArticles(articles);
         articleGoodRepository.deleteAllByArticles(articles);
         articleGenreRepository.deleteByArticles(articles);
-        bookRepository.deleteById(articles.getBook().getId());
+        // 책은 인생 책·다른 독후감에서도 공유하므로 독후감 삭제로 함께 삭제하지 않는다.
         articlesRepository.delete(articles);
         return true;
     }
@@ -115,16 +111,7 @@ public class articleService implements ArticleUseCase {
     }
 
     private Book findOrSaveBook(String isbn){
-        if(isbn == null || isbn.isBlank()){
-            throw new IllegalArgumentException("책을 선택해주세요");
-        }
-        Optional<Book> saved = bookRepository.findByIsbn13(Isbn.normalize(isbn));
-        if(saved.isPresent()){
-            return saved.get();
-        }
-        ExternalBook found = bookCatalogService.details(isbn);
-        bookCatalogStore.upsert(List.of(found));
-        return bookRepository.findByIsbn13(found.isbn13())
-                .orElseThrow(() -> new NoSuchElementException("책 정보를 저장하지 못했습니다"));
+        Long bookId = bookSelection.select(isbn);
+        return bookRepository.findById(bookId).orElseThrow(() -> new NoSuchElementException("책을 찾을 수 없습니다"));
     }
 }

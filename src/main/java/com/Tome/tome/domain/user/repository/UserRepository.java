@@ -9,6 +9,16 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User,Long> {
+    /** 프로필 응답은 트랜잭션 밖에서도 인생 책과 다중 장르를 안전하게 사용할 수 있게 가져온다. */
+    @Override
+    @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {"lifeBook", "lifeBook.genres"})
+    Optional<User> findById(Long id);
+
+    /** 인생 책 교체·해제를 사용자 단위로 직렬화한다. */
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @Query("select u from User u where u.id = :id")
+    Optional<User> findByIdForLifeBookUpdate(@Param("id") Long id);
+
     Optional<User> findByEmail(String email);
     Optional<User> findByNickname(String nickname);
 
