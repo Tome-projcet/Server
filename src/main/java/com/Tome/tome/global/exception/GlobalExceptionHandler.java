@@ -85,18 +85,6 @@ public class GlobalExceptionHandler {
         return response(HttpStatus.CONFLICT, "이미 존재하거나 저장할 수 없는 데이터입니다", null);
     }
 
-    @ExceptionHandler(com.Tome.tome.domain.book.infra.BookApiException.class)
-    public ResponseEntity<Map<String, String>> handleBookProvider(com.Tome.tome.domain.book.infra.BookApiException e) {
-        return response(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage(), "도서 API를 사용할 수 없습니다");
-    }
-
-    /** 컨트롤러가 지정한 403·404·503 등의 상태를 500으로 덮어쓰지 않는다. */
-    @ExceptionHandler(org.springframework.web.server.ResponseStatusException.class)
-    public ResponseEntity<Map<String, String>> handleResponseStatus(org.springframework.web.server.ResponseStatusException e) {
-        return ResponseEntity.status(e.getStatusCode())
-                .body(Map.of("message", e.getReason() == null ? "요청을 처리할 수 없습니다" : e.getReason()));
-    }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleException(Exception e) {
         log.error("처리되지 않은 오류", e);

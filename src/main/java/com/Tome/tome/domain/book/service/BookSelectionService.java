@@ -4,6 +4,7 @@ import com.Tome.tome.domain.book.infra.Isbn;
 import com.Tome.tome.domain.book.infra.BookApiException;
 import com.Tome.tome.domain.book.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -24,7 +25,11 @@ public class BookSelectionService {
         if (existing.isPresent()) return existing.get().getId();
         var found = catalog.details(normalized);
         if (!normalized.equals(found.isbn13())) throw new BookApiException("조회한 책의 ISBN이 선택한 ISBN과 다릅니다.");
-        store.upsert(List.of(found));
+        try {
+            store.upsert(List.of(found));
+        } catch (DataIntegrityViolationException e) {
+            // 다른 요청이 같은 책을 먼저 저장했다. 아래에서 그 책을 다시 조회해 사용한다.
+        }
         return books.findByIsbn13(normalized).orElseThrow(() -> new NoSuchElementException("책 정보를 저장하지 못했습니다")).getId();
     }
 }
