@@ -110,4 +110,31 @@ class BookClientsTest {
         assertEquals("기타", taxonomy.fromKdc(""));
         assertEquals("경제/경영", taxonomy.canonical("경제경영"));
     }
+    @Test void malformedJsonFailsWithoutExposingProviderBodyOrKey() {
+        response("/search", 200, "not-json test-kakao-key private-response");
+        var error = assertThrows(BookApiException.class, () -> new KakaoBookClient(config, http).search("책", 1, 10));
+        assertFalse(error.getMessage().contains("test-kakao-key"));
+        assertFalse(error.getMessage().contains("private-response"));
+    }
+    @Test void sparseLibraryMetadataAndInvalidLoanCountsAreSafe() {
+        response("/api/loanItemSrch", 200, """
+                {"response":{"docs":[
+                  {"doc":{"isbn13":"9788983921987","bookname":"책1","loan_count":"-30"}},
+                  {"doc":{"isbn13":"9788983921994","bookname":"책2","loan_count":"not-a-number"}},
+                  {"doc":{"isbn13":"9788983921987","bookname":"중복"}},
+                  {"doc":{"isbn13":"invalid","bookname":"제외"}}]}}
+                """);
+        var result = new LibraryBookClient(config, http, new GenreTaxonomy()).popular(LocalDate.now(), LocalDate.now(), 10);
+        assertEquals(2, result.size());
+        assertTrue(result.stream().allMatch(b -> b.loanCount() == 0 && b.genre().equals("기타")));
+        assertEquals("", result.getFirst().coverUrl());
+        assertEquals("", result.getFirst().writer());
+    }
+    @Test void isbnSearchNeverSelectsADifferentEditionFromTheProvider() {
+        response("/search", 200, """
+                {"documents":[{"isbn":"9788983921994","title":"다른 판본"}]}
+                """);
+        assertTrue(new KakaoBookClient(config, http).findByIsbn("9788983921987").isEmpty());
+    }
+
 }

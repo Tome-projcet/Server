@@ -1,24 +1,28 @@
 package com.Tome.tome.domain.genre.entity;
 
+import com.Tome.tome.domain.book.entity.Book;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/** 공통 장르 이름을 저장한다. 이름의 유일 조건으로 중복 장르 등록을 막는다. */
 @Entity
 @Getter
 @NoArgsConstructor
-
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"book_id", "name"}))
 public class Genre {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false)
     private String name;
 
-    /** 표준화한 이름으로 장르를 생성한다. */
-    public Genre(String name) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id")
+    private Book book;
+
+    public Genre(String name, Book book) {
         this.name = name;
+        this.book = book;
     }
 }

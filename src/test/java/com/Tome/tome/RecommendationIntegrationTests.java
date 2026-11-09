@@ -53,8 +53,8 @@ class RecommendationIntegrationTests {
         return new ExternalBook(prefix+(10-sum%10)%10, "책"+index, "작가", "", "", "출판사", "소개", genre, count, "DATA4LIBRARY");
     }
     @Test void repeatedSyncUpdatesInsteadOfDuplicatingAndSeedsStableGenres() {
-        assertEquals(13, catalog.ensureGenres().size());
-        assertEquals(13, catalog.ensureGenres().size());
+        assertEquals(13, catalog.listGenres().size());
+        assertEquals(13, catalog.listGenres().size());
         var first = book(1,"경제경영",20);
         catalog.upsert(List.of(first));
         var id = books.findByIsbn13(first.isbn13()).orElseThrow().getId();
@@ -62,7 +62,7 @@ class RecommendationIntegrationTests {
         books.flush();
         var updated = books.findByIsbn13(first.isbn13()).orElseThrow();
         assertEquals(1, books.count()); assertEquals(id,updated.getId());
-        assertEquals(99,updated.getLoanCount()); assertEquals("경제/경영",updated.getGenre().getName());
+        assertEquals(99,updated.getLoanCount()); assertEquals("경제/경영",updated.getGenres().getFirst().getName());
         assertEquals("갱신된 제목",updated.getTitle());
     }
     @Test void emptyPreferencesGetPopularFallbackAndEmptyCatalogIsValid() {
@@ -134,12 +134,12 @@ class RecommendationIntegrationTests {
     @Test void mainPagedBookQueryWorksWithCatalogMetadata() {
         catalog.upsert(List.of(book(1, "소설", 1), book(2, "소설", 2), book(3, "인문", 3)));
         books.flush();
-        var first = books.findByGenre_Name("소설", org.springframework.data.domain.PageRequest.of(0, 1));
-        var second = books.findByGenre_Name("소설", org.springframework.data.domain.PageRequest.of(1, 1));
+        var first = books.findByGenreName("소설", org.springframework.data.domain.PageRequest.of(0, 1));
+        var second = books.findByGenreName("소설", org.springframework.data.domain.PageRequest.of(1, 1));
         assertEquals(1, first.size());
         assertEquals(1, second.size());
         assertNotEquals(first.getFirst().getId(), second.getFirst().getId());
-        assertEquals("소설", first.getFirst().getGenre().getName());
+        assertEquals("소설", first.getFirst().getGenres().getFirst().getName());
     }
     @Test void controllersEnforceOwnershipValidationAndSyncToken() throws Exception {
         var user=user();

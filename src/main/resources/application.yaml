@@ -17,6 +17,9 @@ spring:
     hibernate:
       ddl-auto: ${JPA_DDL_AUTO:update}
     show-sql: ${JPA_SHOW_SQL:false}
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
 
   security:
     oauth2:

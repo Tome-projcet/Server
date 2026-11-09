@@ -30,7 +30,7 @@ public class RecommendationController {
     @Operation(summary = "내 취향에 맞는 도서 추천", description = "관심 장르 선호도 75%와 로그 변환한 대출량 25%로 정렬하고 장르 다양성을 반영합니다. 관심사가 없으면 인기 도서로 보완합니다. 추천 요청은 외부 API를 호출하지 않습니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "추천 이유를 포함한 목록. 후보가 없으면 빈 배열"),
-            @ApiResponse(responseCode = "400", description = "추천 개수 범위 오류", content = @Content(schema = @Schema(implementation = org.springframework.http.ProblemDetail.class))),
+            @ApiResponse(responseCode = "400", description = "추천 개수 범위 오류", content = @Content(schema = @Schema(example = "{\"message\": \"오류 메시지\"}"))),
             @ApiResponse(responseCode = "403", description = "다른 사용자의 추천 조회 시도", content = @Content)
     })
     @GetMapping("/books")

@@ -2,7 +2,6 @@ package com.Tome.tome.domain.user.dto;
 
 
 import com.Tome.tome.domain.user.entity.User;
-import jakarta.persistence.Column;
 
 public record PageUserResponse(
         String nickname,
@@ -10,7 +9,9 @@ public record PageUserResponse(
         String bookcount,
         int follow,
         int follwing,
-        String profileUrl
+        String profileUrl,
+        @io.swagger.v3.oas.annotations.media.Schema(description = "인생 책. 선택하지 않은 경우 null")
+        com.Tome.tome.domain.book.dto.BookResponseDto lifeBook
 ) {
 
     public static PageUserResponse from(User user){
@@ -20,7 +21,8 @@ public record PageUserResponse(
                 user.getBookcount(),
                 user.getFollow(),
                 user.getFollwing(),
-                user.getProfileUrl()
+                user.getProfileUrl(),
+                user.getLifeBook() == null ? null : new com.Tome.tome.domain.book.dto.BookResponseDto(user.getLifeBook())
         );
     }
 }

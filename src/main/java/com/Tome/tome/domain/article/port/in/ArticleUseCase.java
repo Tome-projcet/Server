@@ -2,7 +2,9 @@ package com.Tome.tome.domain.article.port.in;
 
 import com.Tome.tome.domain.article.dto.request.AddArticleRequest;
 import com.Tome.tome.domain.article.dto.request.UpdateArticleRequest;
+import com.Tome.tome.domain.article.entity.ArticleGenre;
 import com.Tome.tome.domain.article.entity.Articles;
+import com.Tome.tome.domain.genre.entity.Genre;
 import com.Tome.tome.domain.user.entity.User;
 
 import java.util.List;
@@ -20,4 +22,6 @@ public interface ArticleUseCase {
     boolean delete(Long id, User user);
 
     Optional<Articles> update(Long id, UpdateArticleRequest request, User user);
+
+    List<ArticleGenre> findGenre(Long id);
 }

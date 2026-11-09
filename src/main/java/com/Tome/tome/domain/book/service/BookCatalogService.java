@@ -75,7 +75,7 @@ public class BookCatalogService {
     private ExternalBook cached(com.Tome.tome.domain.book.entity.Book book) {
         return new ExternalBook(book.getIsbn13(), book.getTitle(), book.getWriter(), book.getBookurl(),
                 book.getBookbuyurl(), book.getPublisher(), book.getDescription(),
-                book.getGenre() == null ? "기타" : book.getGenre().getName(),
+                book.getGenres().isEmpty() ? "기타" : book.getGenres().getFirst().getName(),
                 book.getLoanCount() == null ? 0 : book.getLoanCount(), book.getSource());
     }
     @io.swagger.v3.oas.annotations.media.Schema(description = "인기 도서 수집 결과")
