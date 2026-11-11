@@ -14,18 +14,27 @@ import static com.Tome.tome.domain.book.infra.BookHttpClient.*;
 public class KakaoBookClient {
     private final BookApiConfig config;
     private final BookHttpClient http;
-    /** 사용자 검색어와 페이지 조건으로 검색한다. 매개변수 범위는 컨트롤러에서 검사한다. */
+
+    /**
+     * 사용자 검색어와 페이지 조건으로 검색한다. 매개변수 범위는 컨트롤러에서 검사한다.
+     */
     public List<ExternalBook> search(String query, int page, int size) {
         return request(query, null, page, size);
     }
-    /** ISBN 검색 결과 중 요청 ISBN과 정확히 같은 책만 선택한다. */
+
+    /**
+     * ISBN 검색 결과 중 요청 ISBN과 정확히 같은 책만 선택한다.
+     */
     public Optional<ExternalBook> findByIsbn(String isbn) {
         String normalized = Isbn.normalize(isbn);
         if (normalized.isBlank()) return Optional.empty();
         return request(normalized, "isbn", 1, 10).stream()
                 .filter(book -> normalized.equals(book.isbn13())).findFirst();
     }
-    /** 인증 헤더를 구성하고 검색어를 인코딩한다. 유효하지 않은 ISBN과 응답 내 중복 책은 제외한다. */
+
+    /**
+     * 인증 헤더를 구성하고 검색어를 인코딩한다. 유효하지 않은 ISBN과 응답 내 중복 책은 제외한다.
+     */
     private List<ExternalBook> request(String query, String target, int page, int size) {
         if (config.getKakaoKey().isBlank()) throw new BookApiException("KAKAO_REST_API_KEY 설정이 필요합니다.");
         var builder = UriComponentsBuilder.fromUriString(config.getKakaoUrl())
@@ -46,5 +55,10 @@ public class KakaoBookClient {
                     text(item, "contents"), "기타", 0, "KAKAO"));
         }
         return List.copyOf(result.values());
+    }
+
+
+    public List<ExternalBook> searchByAuthor(String author, int page, int size) {
+        return request(author, "person", page, size);
     }
 }

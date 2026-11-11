@@ -4,6 +4,7 @@ import com.Tome.tome.domain.book.entity.Book;
 import com.Tome.tome.domain.genre.entity.Genre;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,4 +32,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     /** main의 기존 페이지 조회 계약과 지연 로딩 정책을 보존한다. */
     @org.springframework.data.jpa.repository.EntityGraph(attributePaths = "genre")
     List<Book> findByGenre_Name(String name, org.springframework.data.domain.Pageable pageable);
+
+    List<Book> findByWriterContainingIgnoreCase(String writer,
+                                                org.springframework.data.domain.Pageable pageable);
 }

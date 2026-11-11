@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import java.time.*;
 import java.util.*;
 
+import static java.util.Arrays.stream;
+
 /** 검색·상세 통합과 인기 도서 수집을 조정한다. 외부 HTTP 호출은 DB 저장 트랜잭션 밖에서 수행한다. */
 @Service
 @RequiredArgsConstructor
@@ -83,4 +85,29 @@ public class BookCatalogService {
                              @io.swagger.v3.oas.annotations.media.Schema(description = "대출 집계 시작일") LocalDate start,
                              @io.swagger.v3.oas.annotations.media.Schema(description = "대출 집계 종료일") LocalDate end,
                              @io.swagger.v3.oas.annotations.media.Schema(description = "카카오 보완 실패 등의 경고. 없으면 빈 배열") List<String> warnings) {}
+
+    public List<ExternalBook> searchByAuthor(String author, int page, int size){
+        try{
+            return kakao.searchByAuthor(author, page, size);
+        } catch (BookApiException e){
+            var cached = books.findByWriterContainingIgnoreCase(author,
+                    org.springframework.data.domain.PageRequest.of(page-1, size));
+            if(cached.isEmpty()) throw e;
+            return cached.stream().map(this::cached).toList();
+        }
+    }
+
+    public List<String> searchByAuthors(String keyword, int size){
+        List<ExternalBook> found = searchByAuthor(keyword, 1, 50);
+        if (found.isEmpty())
+            found = books.findByWriterContainingIgnoreCase(keyword,
+                    org.springframework.data.domain.PageRequest.of(0, 50)).stream().map(this::cached).toList();
+        return found.stream()
+                .flatMap(book -> stream(book.writer().split(",")))
+                .map(String::trim)
+                .filter(name -> !name.isBlank() && name.contains(keyword))
+                .distinct()
+                .limit(size)
+                .toList();
+    }
 }

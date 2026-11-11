@@ -14,6 +14,7 @@ import com.Tome.tome.global.config.BookApiConfig;
 import com.Tome.tome.domain.book.service.BookCatalogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import java.nio.charset.StandardCharsets;
@@ -76,5 +77,35 @@ public class BookCatalogController {
                 || java.time.temporal.ChronoUnit.DAYS.between(from, until) > 366)
             throw new IllegalArgumentException("조회 기간은 최대 1년, 수집 개수는 1~100권입니다.");
         return catalog.syncPopular(from, until, size);
+    }
+
+    @Operation(summary = "대충 작가로 책 검색하는 api", description = "특정 작가 책만 검색하빈다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "검색 목록 반환"),
+            @ApiResponse(responseCode = "400", description = "검색어 또는 페이지·개수 범위 오류", content = @Content(schema = @Schema(implementation = org.springframework.http.ProblemDetail.class))),
+            @ApiResponse(responseCode = "503", description = "외부 API 사용 불가이며 DB 대체 결과도 없음", content = @Content(schema = @Schema(implementation = org.springframework.http.ProblemDetail.class)))
+    })
+    @GetMapping("/search/author")
+    public ResponseEntity<List<ExternalBook>> searchByAuthor(@RequestParam String name,
+                                                             @RequestParam(defaultValue = "1") int page,
+                                                             @RequestParam(defaultValue = "10") int size){
+        if (name.isBlank() || name.length() > 100 || page < 1 || page > 50 || size < 1 || size > 50)
+            throw new IllegalArgumentException("저자 이름은 1~100자, 페이지와 개수는 1~50입니다.");
+        return ResponseEntity.ok().body(catalog.searchByAuthor(name.trim(), page, size));
+    }
+
+    @Operation(summary = "작가 검색하는 api", description = "특정 작가만 검색하빈다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "검색 목록 반환"),
+            @ApiResponse(responseCode = "400", description = "검색어 또는 페이지·개수 범위 오류", content = @Content(schema = @Schema(implementation = org.springframework.http.ProblemDetail.class))),
+            @ApiResponse(responseCode = "503", description = "외부 API 사용 불가이며 DB 대체 결과도 없음", content = @Content(schema = @Schema(implementation = org.springframework.http.ProblemDetail.class)))
+    })
+    @GetMapping("/authors")
+    public ResponseEntity<List<String>> searchAuthors(@RequestParam String keyword,
+                                                      @RequestParam(defaultValue = "10") int size){
+        if(keyword.isBlank() || keyword.length() > 100 || size < 1 || size > 50){
+            throw new IllegalArgumentException("키워드 이름은 1~100자, 개수는 1~50입니다.");
+        }
+        return ResponseEntity.ok().body(catalog.searchByAuthors(keyword, size));
     }
 }
