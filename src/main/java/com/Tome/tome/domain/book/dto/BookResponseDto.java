@@ -55,7 +55,7 @@ public class BookResponseDto {
         this.bookurl = book.getBookurl();
         this.bookbuyurl = book.getBookbuyurl();
         this.publisher = book.getPublisher();
-        this.genre = book.getGenre() == null ? "기타" : book.getGenre().getName();
+        this.genre = book.getGenres().isEmpty() ? "기타" : book.getGenres().getFirst().getName();
         this.description = book.getDescription();
         this.source = book.getSource();
         this.loanCount = book.getLoanCount() == null ? 0 : book.getLoanCount();
@@ -64,5 +64,10 @@ public class BookResponseDto {
     public BookResponseDto(Book book, String reason) {
         this(book);
         this.recommendationReason = reason;
+    }
+    /** 추천 근거로 고른 장르를 그대로 응답해 genre와 추천 이유가 어긋나지 않게 한다. */
+    public BookResponseDto(Book book, String genre, String reason) {
+        this(book, reason);
+        this.genre = genre;
     }
 }

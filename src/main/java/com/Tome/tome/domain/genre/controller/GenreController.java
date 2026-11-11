@@ -34,7 +34,9 @@ public class GenreController {
     })
     @GetMapping
     public List<GenreResponse> genres() {
-        return catalog.listGenres().stream().map(g -> new GenreResponse(g.getId(), g.getName())).toList();
+        List<String> names = catalog.listGenres();
+        return java.util.stream.IntStream.range(0, names.size())
+                .mapToObj(i -> new GenreResponse((long) i + 1, names.get(i))).toList();
     }
     /** 현재 로그인한 사용자의 장르 이름과 선호 카운트를 반환합니다. */
     @Operation(summary = "내 관심 장르 조회", description = "현재 로그인한 사용자의 장르 이름과 선호 카운트를 반환합니다.")
@@ -47,7 +49,7 @@ public class GenreController {
     @Operation(summary = "내 관심 장르 교체", description = "최대 5개의 관심 장르로 교체합니다. 중복 선택을 정리하고 유지된 장르의 카운트는 보존합니다. 빈 목록으로 관심사를 비울 수 있습니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "갱신된 관심 장르 목록"),
-            @ApiResponse(responseCode = "400", description = "미지원 장르, 기타 선택 또는 5개 초과", content = @Content(schema = @Schema(implementation = org.springframework.http.ProblemDetail.class)))
+            @ApiResponse(responseCode = "400", description = "미지원 장르, 기타 선택 또는 5개 초과", content = @Content(schema = @Schema(example = "{\"message\": \"오류 메시지\"}")))
     })
     @Parameter(name = "X-XSRF-TOKEN", in = io.swagger.v3.oas.annotations.enums.ParameterIn.HEADER, description = "세션 인증 시 XSRF-TOKEN 쿠키 값을 전달. Bearer JWT 요청은 불필요")
     @PutMapping("/preferences")
