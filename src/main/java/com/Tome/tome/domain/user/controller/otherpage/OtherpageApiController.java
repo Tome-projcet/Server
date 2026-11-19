@@ -1,6 +1,6 @@
 package com.Tome.tome.domain.user.controller.otherpage;
 
-import com.Tome.tome.domain.user.dto.PageUserResponse;
+import com.Tome.tome.domain.user.dto.response.PageUserResponse;
 import com.Tome.tome.domain.user.entity.User;
 import com.Tome.tome.domain.user.port.in.UserUseCase;
 import io.swagger.v3.oas.annotations.Operation;

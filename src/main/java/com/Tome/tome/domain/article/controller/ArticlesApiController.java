@@ -22,12 +22,13 @@ import java.util.List;
 
 @Tag(name = "Article", description = "독후감 API")
 @RequiredArgsConstructor
+@RequestMapping("/api/articles")
 @Controller
 public class ArticlesApiController {
     private final ArticleUseCase articleUseCase;
 
     @Operation(summary = "독후감 작성")
-    @PostMapping("/api/articles")
+    @PostMapping
     public ResponseEntity<ArticleViewResponses> addArticles(@RequestBody AddArticleRequest request,
                                                             @AuthenticationPrincipal User user){
         Articles saveData = articleUseCase.save(request, user);
@@ -36,7 +37,7 @@ public class ArticlesApiController {
     }
 
     @Operation(summary = "독후감 목록 조회", description = "page는 0부터, size는 최대 100입니다. 최신 글부터 반환합니다.")
-    @GetMapping("/api/articles")
+    @GetMapping
     public ResponseEntity<List<articleResponses>> allArticles(@RequestParam(defaultValue = "0") int page,
                                                               @RequestParam(defaultValue = "20") int size){
         List<articleResponses> find_articles = articleUseCase.findAll(page, size).stream().map(articleResponses::new).toList();
@@ -45,7 +46,7 @@ public class ArticlesApiController {
     }
 
     @Operation(summary = "독후감 상세 조회")
-    @GetMapping("/api/articles/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ArticleViewResponses> findArticles(@PathVariable Long id){
         Articles articles1 = articleUseCase.findById(id);
 
@@ -53,7 +54,7 @@ public class ArticlesApiController {
     }
 
     @Operation(summary = "게시물의 장르 조회")
-    @GetMapping("/api/articles/{id}/genre")
+    @GetMapping("/{id}/genre")
     public ResponseEntity<List<ArticlesGenreResponse>> findArticlesGenre(@PathVariable Long id){
         List<ArticleGenre> l = articleUseCase.findGenre(id);
         List<ArticlesGenreResponse> list = new ArrayList<>();
@@ -66,7 +67,7 @@ public class ArticlesApiController {
     }
 
     @Operation(summary = "좋아요 / 좋아요 취소")
-    @PutMapping("/api/articles/{id}/good/up")
+    @PutMapping("/{id}/good/up")
     public ResponseEntity<Void> upgood(@PathVariable Long id,
                                        @AuthenticationPrincipal User user){
         articleUseCase.upgood(id, user);
@@ -75,7 +76,7 @@ public class ArticlesApiController {
     }
 
     @Operation(summary = "독후감 삭제", description = "작성자가 아니면 403을 반환합니다.")
-    @DeleteMapping("/api/articles/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteArticles(@PathVariable Long id,
                                                @AuthenticationPrincipal User user){
         articleUseCase.delete(id, user);
@@ -83,7 +84,7 @@ public class ArticlesApiController {
     }
 
     @Operation(summary = "독후감 수정", description = "작성자가 아니면 403을 반환합니다.")
-    @PutMapping("/api/articles/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ArticleViewResponses> updateArticles(@PathVariable Long id, @RequestBody UpdateArticleRequest request,
                                                                @AuthenticationPrincipal User user){
         Articles updatearticles = articleUseCase.update(id, request, user).orElseThrow();

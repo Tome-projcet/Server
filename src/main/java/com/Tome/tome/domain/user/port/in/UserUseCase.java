@@ -1,6 +1,9 @@
 package com.Tome.tome.domain.user.port.in;
 
-import com.Tome.tome.domain.user.dto.AddUserRequest;
+import com.Tome.tome.domain.user.dto.request.AddUserRequest;
+import com.Tome.tome.domain.user.dto.request.LoginRequest;
+import com.Tome.tome.domain.user.dto.response.LoginResponse;
+import com.Tome.tome.domain.user.dto.response.LoginResult;
 import com.Tome.tome.domain.user.entity.User;
 
 public interface UserUseCase {
@@ -23,4 +26,6 @@ public interface UserUseCase {
     User updateProfileUrl(Long userId, String url);
 
     void checkGenre(User user, String genreName);
+
+    LoginResult login(LoginRequest loginRequest);
 }

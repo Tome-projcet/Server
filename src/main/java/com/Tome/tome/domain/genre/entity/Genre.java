@@ -1,6 +1,7 @@
 package com.Tome.tome.domain.genre.entity;
 
 import com.Tome.tome.domain.book.entity.Book;
+import com.Tome.tome.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"book_id", "name"}))
-public class Genre {
+public class Genre extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

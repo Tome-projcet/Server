@@ -3,7 +3,7 @@ package com.Tome.tome;
 import com.Tome.tome.domain.book.infra.ExternalBook;
 import com.Tome.tome.domain.book.repository.BookRepository;
 import com.Tome.tome.domain.book.service.*;
-import com.Tome.tome.domain.user.dto.PageUserResponse;
+import com.Tome.tome.domain.user.dto.response.PageUserResponse;
 import com.Tome.tome.domain.user.entity.User;
 import com.Tome.tome.domain.user.repository.UserRepository;
 import com.Tome.tome.domain.user.service.*;

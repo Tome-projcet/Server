@@ -19,11 +19,12 @@ import java.util.List;
 @Tag(name = "Comment", description = "댓글 API")
 @RequiredArgsConstructor
 @Controller
+@RequestMapping("/api/articles")
 public class CommentController {
     private final CommentUseCase commentUseCase;
 
     @Operation(summary = "댓글 작성")
-    @PostMapping("/api/articles/{articleId}/comments")
+    @PostMapping("/{articleId}/comments")
     public ResponseEntity<CommentResponses> addComment(@PathVariable Long articleId, @RequestBody AddCommentRequest request,
                                                        @AuthenticationPrincipal User user){
         Comment saved = commentUseCase.save(articleId, request, user);
@@ -31,21 +32,21 @@ public class CommentController {
     }
 
     @Operation(summary = "댓글 목록 조회")
-    @GetMapping("/api/articles/{articleId}/comments")
+    @GetMapping("/{articleId}/comments")
     public ResponseEntity<List<CommentResponses>> getComments(@PathVariable Long articleId){
         List<CommentResponses> comment = commentUseCase.findByArticle(articleId).stream().map(CommentResponses::new).toList();
         return ResponseEntity.status(200).body(comment);
     }
 
     @Operation(summary = "댓글 삭제", description = "작성자가 아니면 403을 반환합니다.")
-    @DeleteMapping("/api/articles/comments/{id}")
+    @DeleteMapping("/comments/{id}")
     public ResponseEntity<Void> deleteComments(@PathVariable Long id, @AuthenticationPrincipal User user){
         commentUseCase.delete(id, user);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "댓글 수정")
-    @PutMapping("/api/articles/comments/{id}")
+    @PutMapping("/comments/{id}")
     public ResponseEntity<CommentResponses> updateComment(@PathVariable Long id, @AuthenticationPrincipal User user,
                                                  @RequestBody UpdateCommentRequest request){
             Comment comment = commentUseCase.update(id, request, user);

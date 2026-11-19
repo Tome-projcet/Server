@@ -1,4 +1,4 @@
-package com.Tome.tome.domain.user.dto;
+package com.Tome.tome.domain.user.dto.response;
 
 
 import com.Tome.tome.domain.user.entity.User;

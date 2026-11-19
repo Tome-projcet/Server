@@ -28,7 +28,6 @@ public class ArticleViewResponses {
         this.id = articles.getId();
         this.good = articles.getGood();
         this.bookreport = articles.getBookreport();
-        this.time = articles.getTime();
         this.nickname = articles.getUser() != null ? articles.getUser().getNickname() : null;
         this.bookurl = book.getBookurl();
         this.bookBuyUrl = book.getBookbuyurl();

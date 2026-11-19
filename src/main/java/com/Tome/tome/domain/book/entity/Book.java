@@ -1,9 +1,11 @@
 package com.Tome.tome.domain.book.entity;
 
 import com.Tome.tome.domain.genre.entity.Genre;
+import com.Tome.tome.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +14,8 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-
-public class Book {
+@SuperBuilder
+public class Book extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

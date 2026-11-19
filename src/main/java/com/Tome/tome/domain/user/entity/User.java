@@ -1,5 +1,6 @@
 package com.Tome.tome.domain.user.entity;
 
+import com.Tome.tome.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
-public class User implements UserDetails {
+public class User extends BaseEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
@@ -57,7 +58,7 @@ public class User implements UserDetails {
     private String profileUrl;
 
     @Builder
-    public User(String email, String password, String nickname, String lifewriter, String auth){
+    public User(String email, String password, String nickname, String lifewriter){
         this.email = email;
         this.password = password;
         this.nickname = nickname;
