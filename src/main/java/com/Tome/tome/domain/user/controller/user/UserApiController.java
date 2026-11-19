@@ -1,9 +1,13 @@
 package com.Tome.tome.domain.user.controller.user;
 
-import com.Tome.tome.domain.user.dto.AddUserRequest;
-import com.Tome.tome.domain.user.dto.NicknameRequest;
-import com.Tome.tome.domain.user.dto.PageUserResponse;
-import com.Tome.tome.domain.user.dto.WriterRequest;
+import com.Tome.tome.domain.auth.service.TokenService;
+import com.Tome.tome.domain.user.dto.request.AddUserRequest;
+import com.Tome.tome.domain.user.dto.request.LoginRequest;
+import com.Tome.tome.domain.user.dto.request.NicknameRequest;
+import com.Tome.tome.domain.user.dto.response.LoginResponse;
+import com.Tome.tome.domain.user.dto.response.LoginResult;
+import com.Tome.tome.domain.user.dto.response.PageUserResponse;
+import com.Tome.tome.domain.user.dto.request.WriterRequest;
 import com.Tome.tome.domain.user.entity.User;
 import com.Tome.tome.domain.user.port.in.UserUseCase;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,7 +15,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +37,12 @@ public class UserApiController {
 
     private final UserUseCase userUseCase;
 
+    @Value("${cookie.refresh-token.secure}")
+    private boolean cookieSecure;
+
+    @Value("${cookie.refresh-token.same-site}")
+    private String cookieSameSite;
+
     @Operation(summary = "회원가입", description = "JSON으로 email, password(8자 이상), nickname을 받습니다. X-XSRF-TOKEN 헤더가 필요합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "가입 성공, 생성된 사용자 id 반환"),
@@ -39,6 +53,25 @@ public class UserApiController {
     public ResponseEntity<Map<String, Long>> signup(@RequestBody AddUserRequest request){
         Long userId = userUseCase.save(request);
         return ResponseEntity.status(201).body(Map.of("id", userId));
+    }
+
+    @Operation(summary = "로그인")
+    @SecurityRequirements
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest){
+        LoginResult result = userUseCase.login(loginRequest);
+
+        ResponseCookie cookie = ResponseCookie.from(TokenService.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken())
+                .path("/")
+                .maxAge(TokenService.REFRESH_TOKEN_DURATION)
+                .httpOnly(true)
+                .secure(cookieSecure)
+                .sameSite(cookieSameSite)
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(LoginResponse.from(result.accessToken(), result.firstLogin()));
     }
 
     @Operation(summary = "첫 로그인 여부 확인", description = "온보딩 닉네임을 설정하기 전까지 firstLogin이 true입니다. 조회만 하고 값을 바꾸지 않습니다.")

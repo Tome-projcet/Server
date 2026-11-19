@@ -1,7 +1,7 @@
 package com.Tome.tome.domain.user.controller.mypage;
 
 import com.Tome.tome.domain.book.dto.BookResponseDto;
-import com.Tome.tome.domain.user.dto.LifeBookRequest;
+import com.Tome.tome.domain.user.dto.request.LifeBookRequest;
 import com.Tome.tome.domain.user.entity.User;
 import com.Tome.tome.domain.user.service.LifeBookService;
 import com.Tome.tome.domain.user.service.LifeBookStore;

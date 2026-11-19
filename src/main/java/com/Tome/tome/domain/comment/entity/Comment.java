@@ -2,11 +2,13 @@ package com.Tome.tome.domain.comment.entity;
 
 import com.Tome.tome.domain.article.entity.Articles;
 import com.Tome.tome.domain.user.entity.User;
+import com.Tome.tome.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -17,7 +19,8 @@ import java.time.LocalDateTime;
 @Table(name = "Comments")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class Comment {
+@SuperBuilder
+public class Comment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,10 +35,6 @@ public class Comment {
 
     @Column(name = "bad")
     private int bad;
-
-    @CreatedDate
-    @Column(name = "CreateAt")
-    private LocalDateTime CreateAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "articles_id")

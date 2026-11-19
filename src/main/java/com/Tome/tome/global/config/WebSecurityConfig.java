@@ -1,8 +1,5 @@
 package com.Tome.tome.global.config;
 
-import com.Tome.tome.domain.auth.handler.LoginFailureHandler;
-import com.Tome.tome.domain.auth.handler.LoginSuccessHandler;
-import com.Tome.tome.domain.auth.handler.RefreshTokenLogoutHandler;
 import com.Tome.tome.global.config.jwt.TokenAuthenticationFilter;
 import com.Tome.tome.global.config.jwt.TokenProvider;
 import com.Tome.tome.global.util.JsonResponseUtil;
@@ -37,9 +34,6 @@ import java.util.Map;
 public class WebSecurityConfig {
 
     private final TokenProvider tokenProvider;
-    private final LoginSuccessHandler loginSuccessHandler;
-    private final LoginFailureHandler loginFailureHandler;
-    private final RefreshTokenLogoutHandler refreshTokenLogoutHandler;
 
     @Value("${cors.allowed-origins}")
     private List<String> allowedOrigins;
@@ -68,18 +62,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/login","/signup","/user","/error","/api/token","/api/csrf",
-                                "/swagger-ui/**","/swagger-ui.html","/v3/api-docs/**").permitAll()
+                                "/swagger-ui/**","/swagger-ui.html","/v3/api-docs/**", "/logout").permitAll()
                         .anyRequest().authenticated())
-                .formLogin(formLogin -> formLogin
-                        .loginProcessingUrl("/login")
-                        .usernameParameter("email")
-                        .successHandler(loginSuccessHandler)
-                        .failureHandler(loginFailureHandler))
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .addLogoutHandler(refreshTokenLogoutHandler)
-                        .logoutSuccessHandler((request, response, authentication) ->
-                                JsonResponseUtil.write(response, 200, Map.of("message", "로그아웃되었습니다"))))
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, e) ->
                                 JsonResponseUtil.write(response, 401, Map.of("message", "로그인이 필요합니다")))

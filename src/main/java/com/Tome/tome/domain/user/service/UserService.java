@@ -1,6 +1,11 @@
 package com.Tome.tome.domain.user.service;
 
-import com.Tome.tome.domain.user.dto.AddUserRequest;
+import com.Tome.tome.domain.auth.service.RefreshTokenService;
+import com.Tome.tome.domain.auth.service.TokenService;
+import com.Tome.tome.domain.user.dto.request.AddUserRequest;
+import com.Tome.tome.domain.user.dto.request.LoginRequest;
+import com.Tome.tome.domain.user.dto.response.LoginResponse;
+import com.Tome.tome.domain.user.dto.response.LoginResult;
 import com.Tome.tome.domain.user.entity.User;
 import com.Tome.tome.domain.user.entity.UserFollow;
 import com.Tome.tome.domain.user.entity.UserGenre;
@@ -8,10 +13,19 @@ import com.Tome.tome.domain.user.port.in.UserUseCase;
 import com.Tome.tome.domain.user.repository.UserFollowRepository;
 import com.Tome.tome.domain.user.repository.UserGenreRepository;
 import com.Tome.tome.domain.user.repository.UserRepository;
+import com.Tome.tome.global.config.jwt.TokenProvider;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -26,6 +40,8 @@ public class UserService implements UserUseCase {
     private final PasswordEncoder passwordEncoder;
 
     private final static Pattern PROFILE_NAME = Pattern.compile("^https?://\\S+$");
+    private final TokenProvider tokenProvider;
+    private final RefreshTokenService refreshTokenService;
 
     @Override
     public Long save(AddUserRequest dto) {
@@ -47,9 +63,36 @@ public class UserService implements UserUseCase {
             if (result.isPresent()) {
                 throw new IllegalArgumentException("이미 사용중인 닉네임 입니다");
             } else {
-                return userRepository.save(User.builder().email(dto.getEmail()).nickname(dto.getNickname()).password(passwordEncoder.encode(dto.getPassword())).build()).getId();
+                String password = passwordEncoder.encode(dto.getPassword());
+                User user = User.builder()
+                        .email(dto.getEmail()).password(password)
+                        .nickname(dto.getNickname())
+                        .lifewriter(null)
+                        .build();
+                userRepository.save(user);
+                return user.getId();
             }
         }
+    }
+
+    @Override
+    public LoginResult login(LoginRequest loginRequest){
+        if (loginRequest.email() == null || loginRequest.email().isBlank()) {
+            throw new IllegalArgumentException("이메일을 입력해주세요");
+        }
+        if (loginRequest.password() == null || loginRequest.password().isBlank()) {
+            throw new IllegalArgumentException("비밀번호를 입력해주세요");
+        }
+
+        User user = userRepository.findByEmail(loginRequest.email())
+                .filter(found -> passwordEncoder.matches(loginRequest.password(), found.getPassword()))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 올바르지 않습니다"));
+
+        String refreshToken = tokenProvider.generateToken(user, TokenService.REFRESH_TOKEN_DURATION, TokenProvider.TYPE_REFRESH);
+        refreshTokenService.save(user.getId(), refreshToken);
+        String accessToken = tokenProvider.generateToken(user, TokenService.ACCESS_TOKEN_DURATION, TokenProvider.TYPE_ACCESS);
+
+        return new LoginResult(accessToken, refreshToken, user.getfirst());
     }
 
     @Override

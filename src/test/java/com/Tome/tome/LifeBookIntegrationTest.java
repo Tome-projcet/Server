@@ -6,7 +6,7 @@ import com.Tome.tome.domain.book.repository.BookRepository;
 import com.Tome.tome.domain.user.entity.User;
 import com.Tome.tome.domain.user.repository.UserRepository;
 import com.Tome.tome.domain.user.service.*;
-import com.Tome.tome.domain.user.dto.PageUserResponse;
+import com.Tome.tome.domain.user.dto.response.PageUserResponse;
 import com.Tome.tome.domain.article.service.articleService;
 import com.Tome.tome.domain.article.entity.Articles;
 import com.Tome.tome.domain.article.repository.articlesRepository;
