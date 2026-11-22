@@ -1,7 +1,7 @@
 package com.Tome.tome.domain.user.controller.mypage;
 
 import com.Tome.tome.domain.genre.dto.GenreRequest;
-import com.Tome.tome.domain.user.dto.PageUserResponse;
+import com.Tome.tome.domain.user.dto.response.PageUserResponse;
 import com.Tome.tome.domain.user.entity.User;
 import com.Tome.tome.domain.user.port.in.UserMostUseCase;
 import com.Tome.tome.domain.user.port.in.UserUseCase;

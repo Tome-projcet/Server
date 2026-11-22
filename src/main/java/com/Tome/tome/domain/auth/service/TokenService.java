@@ -14,6 +14,9 @@ import java.time.Duration;
 public class TokenService implements TokenUseCase {
     public static final Duration ACCESS_TOKEN_DURATION = Duration.ofHours(2);
 
+    public static final String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";
+    public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(14);
+
     private final TokenProvider tokenProvider;
     private final RefreshTokenService refreshTokenService;
     private final UserUseCase userUseCase;
@@ -28,5 +31,10 @@ public class TokenService implements TokenUseCase {
         User user = userUseCase.findById(userId);
 
         return tokenProvider.generateToken(user, ACCESS_TOKEN_DURATION, TokenProvider.TYPE_ACCESS);
+    }
+
+    @Override
+    public void logout(String refreshToken, Long userId){
+        refreshTokenService.delete(refreshToken, userId);
     }
 }

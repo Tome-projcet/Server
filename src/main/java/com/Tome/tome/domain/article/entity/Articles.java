@@ -2,6 +2,7 @@ package com.Tome.tome.domain.article.entity;
 
 import com.Tome.tome.domain.book.entity.Book;
 import com.Tome.tome.domain.user.entity.User;
+import com.Tome.tome.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @Table(name = "articles")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class Articles {
+public class Articles extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,10 +27,6 @@ public class Articles {
 
     @Column(name = "bad")
     private int bad;
-
-    @CreatedDate
-    @Column(name = "time")
-    private LocalDateTime time;
 
     @Column(name = "bookreport", columnDefinition = "TEXT")
     private String bookreport;

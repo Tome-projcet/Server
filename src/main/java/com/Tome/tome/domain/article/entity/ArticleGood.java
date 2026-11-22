@@ -1,6 +1,7 @@
 package com.Tome.tome.domain.article.entity;
 
 import com.Tome.tome.domain.user.entity.User;
+import com.Tome.tome.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "article_good", uniqueConstraints = @UniqueConstraint(columnNames = {"article_id", "user_id"}))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class ArticleGood {
+public class ArticleGood extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

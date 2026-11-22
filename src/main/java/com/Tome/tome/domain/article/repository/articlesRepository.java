@@ -19,7 +19,6 @@ public interface articlesRepository extends JpaRepository<Articles, Long> {
     Page<Articles> findAll(Pageable pageable);
 
     Optional<Articles> findByBookreport(String bookreport);
-    Optional<Articles> findByTime(Date time);
     Optional<Articles> findByGood(int good);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
